@@ -12,16 +12,19 @@ public class MainActivity extends AppCompatActivity {
     private Button btnClear;
     private DrawView drawView;
     private TextView textView;
-
+    private DrawView drawViewT;
+    private TextView textViewT;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_2);
 
         btnRecognize = findViewById(R.id.buttonRecognize);
         btnClear = findViewById(R.id.buttonClear);
         drawView = findViewById(R.id.draw_view);
         textView = findViewById(R.id.textResult);
+        drawViewT = findViewById(R.id.draw_view_title);
+        textViewT = findViewById(R.id.textResult_title);
 
         hideTitleBar();
 
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 StrokeManager.recognize(textView);
+                StrokeManager.recognize(textViewT);
+                drawView.clear();
             }
         });
 
@@ -38,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawView.clear();
+                drawViewT.clear();
                 StrokeManager.clear();
                 textView.setText("");
+                textViewT.setText("");
             }
         });
     }
