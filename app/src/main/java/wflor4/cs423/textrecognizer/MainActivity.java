@@ -3,6 +3,8 @@ package wflor4.cs423.textrecognizer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,9 +13,13 @@ public class MainActivity extends AppCompatActivity {
     private Button btnRecognize;
     private Button btnClear;
     private DrawView drawView;
-    private TextView textView;
     private DrawView drawViewT;
+    private TextView textView;
     private TextView textViewT;
+    private RadioGroup radioGroup;
+    private RadioButton radioTitle;
+    private RadioButton radioBody;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,8 +29,10 @@ public class MainActivity extends AppCompatActivity {
         btnClear = findViewById(R.id.buttonClear);
         drawView = findViewById(R.id.draw_view);
         textView = findViewById(R.id.textResult);
-        drawViewT = findViewById(R.id.draw_view_title);
         textViewT = findViewById(R.id.textResult_title);
+        radioGroup = findViewById(R.id.radioGroup);
+        radioTitle = findViewById(R.id.radioTitle);
+        radioBody = findViewById(R.id.radioBody);
 
         hideTitleBar();
 
@@ -33,9 +41,17 @@ public class MainActivity extends AppCompatActivity {
         btnRecognize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                StrokeManager.recognize(textView);
-                StrokeManager.recognize(textViewT);
-                drawView.clear();
+                if (radioTitle.isChecked()) {
+                    // Recognize gesture for the title
+                    StrokeManager.recognize(textViewT);
+                    StrokeManager.clear();
+                    drawView.clear();
+                } else if (radioBody.isChecked()) {
+                    // Recognize gesture for the body
+                    StrokeManager.recognize(textView);
+                    StrokeManager.clear();
+                    drawView.clear();
+                }
             }
         });
 
@@ -43,10 +59,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 drawView.clear();
-                drawViewT.clear();
                 StrokeManager.clear();
-                textView.setText("");
-                textViewT.setText("");
             }
         });
     }
