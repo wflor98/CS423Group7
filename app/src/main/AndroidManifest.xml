@@ -25,12 +25,9 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".HandwritingRecognition"
+            android:exported="true" />
+
     </application>
-
-
-
-
-
-
 
 </manifest>
