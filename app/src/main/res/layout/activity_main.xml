@@ -372,7 +372,8 @@
         android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:backgroundTint="@color/design_default_color_primary"/>
+        app:backgroundTint="@color/design_default_color_primary"
+        app:srcCompat="@drawable/plus"/>
 
     <!-- GestureOverlayView to detect gestures -->
     <android.gesture.GestureOverlayView
