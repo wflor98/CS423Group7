@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
         ArrayList<Prediction> objPrediction = objLib.recognize(gesture);
 
-        if (!objPrediction.isEmpty() && objPrediction.get(0).score > 3) {
+        if (!objPrediction.isEmpty() && objPrediction.get(0).score > 4) {
             String gestureName = objPrediction.get(0).name;
 
             int[] gestureOverlayLocation = new int[2];
