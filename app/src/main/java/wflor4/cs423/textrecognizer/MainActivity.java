@@ -171,16 +171,8 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
     private void addNewTask() {
         if (taskList.size() < 6) {
-            View newTask = new View(this);
-            TextView newHeart = new TextView(this);
-            TextView newExclamation = new TextView(this);
-
-            gridLayout.addView(newTask);
-            taskList.add(newTask);
-            heartList.add(newHeart);
-            exclamationList.add(newExclamation);
-
-            Toast.makeText(this, "New task added", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, HandwritingRecognition.class);
+            startActivity(intent);
         } else {
             Toast.makeText(this, "Task limit reached", Toast.LENGTH_SHORT).show();
         }
