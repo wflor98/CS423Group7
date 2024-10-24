@@ -1,32 +1,42 @@
 package wflor4.cs423.textrecognizer;
 
+import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.Calendar;
 
 public class HandwritingRecognition extends AppCompatActivity {
 
-    private Button btnRecognize;
-    private Button btnClear;
+    private Button btnRecognize, btnClear, btnEdit, btnCalendar, btnSave;
     private DrawView drawView;
-    private DrawView drawViewT;
-    private TextView textView;
-    private TextView textViewT;
+    private TextView textView, textViewT;
     private RadioGroup radioGroup;
-    private RadioButton radioTitle;
-    private RadioButton radioBody;
+    private RadioButton radioTitle, radioBody;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_2);
 
+        // Bind UI elements to their respective IDs
         btnRecognize = findViewById(R.id.buttonRecognize);
         btnClear = findViewById(R.id.buttonClear);
+        btnEdit = findViewById(R.id.buttonEdit);  // Added buttonEdit
+        btnCalendar = findViewById(R.id.calendar);  // Calendar button
+        btnSave = findViewById(R.id.checkmark);  // Save button
+        Button btnX = findViewById(R.id.cancel);  // X button
         drawView = findViewById(R.id.draw_view);
         textView = findViewById(R.id.textResult);
         textViewT = findViewById(R.id.textResult_title);
@@ -38,6 +48,42 @@ public class HandwritingRecognition extends AppCompatActivity {
 
         StrokeManager.download();
 
+        // Clear button logic
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawView.clear();
+                StrokeManager.clear();
+                if (radioTitle.isChecked()) {
+                    textViewT.setText("");
+                } else if (radioBody.isChecked()) {
+                    textView.setText("");
+                }
+            }
+        });
+
+        // X button: navigate back to MainActivity
+        btnX.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Return to MainActivity
+                Intent intent = new Intent(HandwritingRecognition.this, MainActivity.class);
+                startActivity(intent);
+                finish();  // Close current activity
+            }
+        });
+
+        // Calendar button: show DatePickerDialog
+        btnCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                showDatePickerDialog();
+                getSupportActionBar().hide();
+            }
+        });
+
+        // Recognize button logic
         btnRecognize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,13 +101,49 @@ public class HandwritingRecognition extends AppCompatActivity {
             }
         });
 
-        btnClear.setOnClickListener(new View.OnClickListener() {
+
+        // Save button: Save the title text
+        btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawView.clear();
-                StrokeManager.clear();
+                Intent intent = new Intent();
+                if (radioTitle.isChecked()) {
+                    // Save title text and pass it back to MainActivity
+                    String title = textViewT.getText().toString();
+                    intent.putExtra("savedText", title);  // Pass the title text
+                    intent.putExtra("type", "title");     // Indicate it's a title
+                } else if (radioBody.isChecked()) {
+                    // Save body text and pass it back to MainActivity
+                    String body = textView.getText().toString();
+                    intent.putExtra("savedText", body);   // Pass the body text
+                    intent.putExtra("type", "body");      // Indicate it's a body
+                }
+
+                setResult(RESULT_OK, intent);  // Set the result to OK and attach the Intent
+                finish();  // Close this activity and return to MainActivity
             }
         });
+
+    }
+
+    // Method to show the DatePickerDialog
+    private void showDatePickerDialog() {
+        // Get the current date
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Create and show the DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(HandwritingRecognition.this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                        Toast.makeText(HandwritingRecognition.this, "Selected date: " + selectedDate, Toast.LENGTH_SHORT).show();
+                    }
+                }, year, month, day);
+        datePickerDialog.show();
     }
 
     private void hideTitleBar() {
@@ -73,23 +155,5 @@ public class HandwritingRecognition extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        hideTitleBar();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        hideTitleBar();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        hideTitleBar();
     }
 }
