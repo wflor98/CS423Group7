@@ -1,158 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:padding="0dp">
 
-    <!-- Container with vertical orientation -->
+    <!-- Horizontal LinearLayout to arrange buttons side by side -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="0dp">
 
-        <!-- FrameLayout to stack TextViewTitle and DatePicker for Title section -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Button with X Icon -->
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:drawableLeft="@android:drawable/ic_delete"
+            android:drawablePadding="8dp"
+            android:padding="12dp" />
 
-            <!-- TextView for title -->
-            <TextView
-                android:id="@+id/textResult_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:fontFamily="sans-serif"
-                android:paddingTop="5dp"
-                android:gravity="center"
-                android:text="Title Name" />
+        <!-- Button with Calendar Icon -->
+        <Button
+            android:id="@+id/calendar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text="Calendar"
+            android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+            android:drawablePadding="8dp"
+            android:padding="12dp" />
 
-            <!-- DatePicker with reduced size -->
-            <DatePicker
-                android:id="@+id/datePicker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleX="0.75"
-                android:scaleY="0.75"
-                android:datePickerMode="spinner"
-                android:calendarViewShown="false"
-                android:spinnersShown="true"
-                android:layout_gravity="center"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"/>
-        </LinearLayout>
+        <!-- Button with Checkmark Icon -->
+        <Button
+            android:id="@+id/checkmark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableRight="@android:drawable/ic_menu_save"
+            android:drawablePadding="8dp"
+            android:padding="12dp" />
 
-        <!-- FrameLayout to stack TextView behind DrawView for Body section -->
-        <FrameLayout
+    </LinearLayout>
+
+    <!-- CheckedTextView (below the buttons) -->
+    <CheckedTextView
+        android:id="@+id/textResult_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Input Title"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:padding="16dp"
+        android:background="@android:color/transparent" />
+
+    <!-- FrameLayout with a background TextView and a DrawView -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="6">
+
+        <!-- TextView behind the DrawView -->
+        <TextView
+            android:id="@+id/textResult"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_height="match_parent"
+            android:text="Main Text"
+            android:textSize="24sp"
+            android:gravity="center"
+            android:textColor="@android:color/darker_gray" />
 
-            <!-- TextView to display recognized text behind the DrawView -->
-            <TextView
-                android:id="@+id/textResult"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColor="@color/black"
-                android:textSize="25sp"
-                android:fontFamily="sans-serif"
-                android:paddingTop="5dp"
-                android:gravity="center"
-                android:text="Recognized Text" />
+        <!-- Custom DrawView on top of the TextView -->
+        <wflor4.cs423.textrecognizer.DrawView
+            android:id="@+id/draw_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent" />
 
-            <!-- DrawView for drawing on top of the TextView for the body -->
-            <wflor4.cs423.textrecognizer.DrawView
-                android:id="@+id/draw_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/transparent" />
-        </FrameLayout>
+    </FrameLayout>
 
-        <!-- RadioGroup for selecting between Title and Body -->
+    <!-- LinearLayout containing the RadioGroup -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="0dp"
+        android:gravity="center">
+
         <RadioGroup
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp">
+            android:orientation="horizontal">
 
+            <!-- First RadioButton -->
             <RadioButton
                 android:id="@+id/radioTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Title" />
 
+            <!-- Second RadioButton -->
             <RadioButton
                 android:id="@+id/radioBody"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Body"
-                android:checked="true" /> <!-- Default checked -->
+                android:text="Body" />
+
         </RadioGroup>
-
-        <!-- HorizontalScrollView for scrolling the button panel -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
-
-            <!-- Button panel with Recognize, Add Text, and Clear buttons -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:background="@color/purple_200"
-                android:layout_gravity="bottom">
-
-                <!-- Recognize button -->
-                <Button
-                    android:id="@+id/buttonRecognize"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Recognize"
-                    android:textSize="18sp"
-                    android:textAllCaps="false"
-                    android:layout_margin="25dp"
-                    android:backgroundTint="@color/black"
-                    android:textColor="@color/white" />
-
-                <!-- Add Text button -->
-                <Button
-                    android:id="@+id/buttonAddText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:text="Add Text"
-                    android:textAllCaps="false"
-                    android:layout_margin="25dp"
-                    android:backgroundTint="@color/black"
-                    android:textColor="@color/white" />
-
-                <!-- Clear button (reset drawing) -->
-                <Button
-                    android:id="@+id/buttonClear"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:text="Clear"
-                    android:textAllCaps="false"
-                    android:layout_margin="25dp"
-                    android:backgroundTint="@color/black"
-                    android:textColor="@color/white" />
-            </LinearLayout>
-        </HorizontalScrollView>
-
     </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- ScrollView with three buttons inside -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
+
+        <!-- Container for the buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <!-- First Button (edit) -->
+            <Button
+                android:id="@+id/buttonEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit" />
+
+            <!-- Second Button -->
+            <Button
+                android:id="@+id/buttonRecognize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Third Button -->
+            <Button
+                android:id="@+id/buttonClear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clear"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
