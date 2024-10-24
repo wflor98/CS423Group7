@@ -75,22 +75,33 @@
                 android:layout_height="wrap_content"
                 android:text="Review and solve problems from sections 1-3" />
 
-            <!-- Heart emoji TextView for task 1 -->
-            <TextView
-                android:id="@+id/task1Heart"
+            <!-- Heart and Exclamation Layout for task 1 -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="❤️"
-                android:textSize="24sp"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/task1Exclamation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="❗"
-                android:textSize="24sp"
-                android:textColor="@android:color/holo_red_dark"
-                android:visibility="gone" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/task1Heart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❤️"
+                    android:textSize="24sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/task1Exclamation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❗"
+                    android:textSize="24sp"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Task 2 -->
@@ -124,22 +135,33 @@
                 android:layout_height="wrap_content"
                 android:text="Finalize English essay and submit." />
 
-            <!-- Heart emoji TextView for task 2 -->
-            <TextView
-                android:id="@+id/task2Heart"
+            <!-- Heart and Exclamation Layout for task 2 -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="❤️"
-                android:textSize="24sp"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/task2Exclamation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="❗"
-                android:textSize="24sp"
-                android:textColor="@android:color/holo_red_dark"
-                android:visibility="gone" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/task2Heart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❤️"
+                    android:textSize="24sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/task2Exclamation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❗"
+                    android:textSize="24sp"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Task 3 -->
@@ -173,22 +195,33 @@
                 android:layout_height="wrap_content"
                 android:text="Write a summary of the assigned content." />
 
-            <!-- Heart emoji TextView for task 3 -->
-            <TextView
-                android:id="@+id/task3Heart"
+            <!-- Heart and Exclamation Layout for task 3 -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="❤️"
-                android:textSize="24sp"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/task3Exclamation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="❗"
-                android:textSize="24sp"
-                android:textColor="@android:color/holo_red_dark"
-                android:visibility="gone" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/task3Heart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❤️"
+                    android:textSize="24sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/task3Exclamation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❗"
+                    android:textSize="24sp"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Task 4 -->
@@ -222,22 +255,33 @@
                 android:layout_height="wrap_content"
                 android:text="Finish part two of the project." />
 
-            <!-- Heart emoji TextView for task 4 -->
-            <TextView
-                android:id="@+id/task4Heart"
+            <!-- Heart and Exclamation Layout for task 4 -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="❤️"
-                android:textSize="24sp"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/task4Exclamation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="❗"
-                android:textSize="24sp"
-                android:textColor="@android:color/holo_red_dark"
-                android:visibility="gone" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/task4Heart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❤️"
+                    android:textSize="24sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/task4Exclamation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❗"
+                    android:textSize="24sp"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Task 5 -->
@@ -271,22 +315,33 @@
                 android:layout_height="wrap_content"
                 android:text="Read chapter 4 before next lecture and takes notes." />
 
-            <!-- Heart emoji TextView for task 5 -->
-            <TextView
-                android:id="@+id/task5Heart"
+            <!-- Heart and Exclamation Layout for task 5 -->
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="❤️"
-                android:textSize="24sp"
-                android:visibility="gone" />
-            <TextView
-                android:id="@+id/task5Exclamation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="❗"
-                android:textSize="24sp"
-                android:textColor="@android:color/holo_red_dark"
-                android:visibility="gone" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <TextView
+                    android:id="@+id/task5Heart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❤️"
+                    android:textSize="24sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/task5Exclamation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="❗"
+                    android:textSize="24sp"
+                    android:layout_marginStart="8dp"
+                    android:textColor="@android:color/holo_red_dark"
+                    android:visibility="gone" />
+            </LinearLayout>
+
         </LinearLayout>
     </androidx.gridlayout.widget.GridLayout>
 
