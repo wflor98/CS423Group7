@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,6 +39,8 @@ public class HandwritingRecognition extends AppCompatActivity {
         btnSave = findViewById(R.id.checkmark);  // Save button
         Button btnX = findViewById(R.id.cancel);  // X button
         drawView = findViewById(R.id.draw_view);
+
+
         textView = findViewById(R.id.textResult);
         textViewT = findViewById(R.id.textResult_title);
         radioGroup = findViewById(R.id.radioGroup);
@@ -53,19 +56,39 @@ public class HandwritingRecognition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (radioTitle.isChecked()) {
-                    // Enable editing for the title text
+                    // Toggle textViewT to be editable
                     textViewT.setFocusableInTouchMode(true);
                     textViewT.setFocusable(true);
                     textViewT.requestFocus();
                     textViewT.setCursorVisible(true);  // Show the cursor for editing
                     Toast.makeText(HandwritingRecognition.this, "Editing Title", Toast.LENGTH_SHORT).show();
                 } else if (radioBody.isChecked()) {
-                    // Enable editing for the body text
+                    // Toggle textView to be editable
                     textView.setFocusableInTouchMode(true);
                     textView.setFocusable(true);
                     textView.requestFocus();
                     textView.setCursorVisible(true);  // Show the cursor for editing
                     Toast.makeText(HandwritingRecognition.this, "Editing Body", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+// Clear button logic to reset both textViews to non-editable state
+        btnClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawView.clear();
+                StrokeManager.clear();
+                if (radioTitle.isChecked()) {
+                    textViewT.setText("");
+                    // Make textViewT non-editable again
+                    textViewT.setFocusable(false);
+                    textViewT.setCursorVisible(false);
+                } else if (radioBody.isChecked()) {
+                    textView.setText("");
+                    // Make textView non-editable again
+                    textView.setFocusable(false);
+                    textView.setCursorVisible(false);
                 }
             }
         });
