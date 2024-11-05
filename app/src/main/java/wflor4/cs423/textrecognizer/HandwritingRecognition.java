@@ -48,6 +48,29 @@ public class HandwritingRecognition extends AppCompatActivity {
 
         StrokeManager.download();
 
+        // Edit button logic by Esat Duman
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (radioTitle.isChecked()) {
+                    // Enable editing for the title text
+                    textViewT.setFocusableInTouchMode(true);
+                    textViewT.setFocusable(true);
+                    textViewT.requestFocus();
+                    textViewT.setCursorVisible(true);  // Show the cursor for editing
+                    Toast.makeText(HandwritingRecognition.this, "Editing Title", Toast.LENGTH_SHORT).show();
+                } else if (radioBody.isChecked()) {
+                    // Enable editing for the body text
+                    textView.setFocusableInTouchMode(true);
+                    textView.setFocusable(true);
+                    textView.requestFocus();
+                    textView.setCursorVisible(true);  // Show the cursor for editing
+                    Toast.makeText(HandwritingRecognition.this, "Editing Body", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
         // Clear button logic
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +168,7 @@ public class HandwritingRecognition extends AppCompatActivity {
                 }, year, month, day);
         datePickerDialog.show();
     }
+
 
     private void hideTitleBar() {
         this.getWindow().getDecorView().setSystemUiVisibility(
