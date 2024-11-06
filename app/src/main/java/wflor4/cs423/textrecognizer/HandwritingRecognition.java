@@ -10,11 +10,16 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.EditText;
+import yuku.ambilwarna.AmbilWarnaDialog;  //  using AmbilWarnaDialog
+
+
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.util.Calendar;
+
+import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class HandwritingRecognition extends AppCompatActivity {
 
@@ -23,6 +28,8 @@ public class HandwritingRecognition extends AppCompatActivity {
     private TextView textView, textViewT;
     private RadioGroup radioGroup;
     private RadioButton radioTitle, radioBody;
+
+    int defaultColor;
 
 
 
@@ -46,10 +53,22 @@ public class HandwritingRecognition extends AppCompatActivity {
         radioGroup = findViewById(R.id.radioGroup);
         radioTitle = findViewById(R.id.radioTitle);
         radioBody = findViewById(R.id.radioBody);
+        Button btnColorPalette = findViewById(R.id.buttonColorPalette);  // Initialize the color picker button
+
+        defaultColor = ContextCompat.getColor(HandwritingRecognition.this, R.color.black);
+
 
         hideTitleBar();
 
         StrokeManager.download();
+
+        // set onClickListener for color palette button added by Esat
+        btnColorPalette.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openColorPicker();  // Now this should work correctly
+            }
+        });
 
         // Edit button logic by Esat Duman
         btnEdit.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +111,9 @@ public class HandwritingRecognition extends AppCompatActivity {
                 }
             }
         });
+
+
+
 
 
         // Clear button logic
@@ -202,5 +224,22 @@ public class HandwritingRecognition extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
+    }
+
+    // Method to open the color picker dialog
+    private void openColorPicker() {
+        AmbilWarnaDialog ambilWarnaDialog = new AmbilWarnaDialog(this, defaultColor, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+            @Override
+            public void onCancel(AmbilWarnaDialog dialog) {
+                ///method does not need implementation leave alone
+            }
+
+            @Override
+            public void onOk(AmbilWarnaDialog dialog, int color) {
+                defaultColor = color;  // Save the selected color
+                // we need to setPenColor here - ED to walter
+            }
+        });
+        ambilWarnaDialog.show();  // Show the color picker dialog
     }
 }
