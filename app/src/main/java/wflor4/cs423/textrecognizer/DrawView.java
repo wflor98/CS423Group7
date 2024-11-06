@@ -18,6 +18,8 @@ public class DrawView extends View {
     public DrawView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
+
+
     }
 
     private void init() {
@@ -31,6 +33,10 @@ public class DrawView extends View {
 
         currentStroke = new Path();
         canvasPaint = new Paint(Paint.DITHER_FLAG);
+    }
+
+    public void setStrokeColor(int color) { // added this for color changing Esat
+        currentStrokePaint.setColor(color);
     }
 
     @Override

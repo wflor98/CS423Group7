@@ -237,7 +237,7 @@ public class HandwritingRecognition extends AppCompatActivity {
             @Override
             public void onOk(AmbilWarnaDialog dialog, int color) {
                 defaultColor = color;  // Save the selected color
-                // we need to setPenColor here - ED to walter
+                drawView.setStrokeColor(color);
             }
         });
         ambilWarnaDialog.show();  // Show the color picker dialog
