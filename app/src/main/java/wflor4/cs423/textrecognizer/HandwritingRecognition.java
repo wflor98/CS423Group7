@@ -10,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.inputmethod.InputMethodManager;
 import yuku.ambilwarna.AmbilWarnaDialog;  //  using AmbilWarnaDialog
 
 
@@ -71,49 +72,97 @@ public class HandwritingRecognition extends AppCompatActivity {
         });
 
         // Edit button logic by Esat Duman
+//        btnEdit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (radioTitle.isChecked()) {
+//                    // Toggle textViewT to be editable
+//                    textViewT.setFocusableInTouchMode(true);
+//                    textViewT.setFocusable(true);
+//                    textViewT.requestFocus();
+//                    textViewT.setCursorVisible(true);  // Show the cursor for editing
+//                    Toast.makeText(HandwritingRecognition.this, "Editing Title", Toast.LENGTH_SHORT).show();
+//                } else if (radioBody.isChecked()) {
+//                    // Toggle textView to be editable
+//                    textView.setFocusableInTouchMode(true);
+//                    textView.setFocusable(true);
+//                    textView.requestFocus();
+//                    textView.setCursorVisible(true);  // Show the cursor for editing
+//                    Toast.makeText(HandwritingRecognition.this, "Editing Body", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                hideTitleBar();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+
                 if (radioTitle.isChecked()) {
-                    // Toggle textViewT to be editable
+                    // Make title field editable
                     textViewT.setFocusableInTouchMode(true);
                     textViewT.setFocusable(true);
                     textViewT.requestFocus();
-                    textViewT.setCursorVisible(true);  // Show the cursor for editing
+                    textViewT.setCursorVisible(true);
+
+                    // Show the soft keyboard
+                    if (imm != null) {
+                        imm.showSoftInput(textViewT, InputMethodManager.SHOW_IMPLICIT);
+                    }
+
                     Toast.makeText(HandwritingRecognition.this, "Editing Title", Toast.LENGTH_SHORT).show();
+
+                    hideTitleBar();
                 } else if (radioBody.isChecked()) {
-                    // Toggle textView to be editable
+
+                    // Make body field editable
                     textView.setFocusableInTouchMode(true);
                     textView.setFocusable(true);
                     textView.requestFocus();
-                    textView.setCursorVisible(true);  // Show the cursor for editing
+                    textView.setCursorVisible(true);
+
+                    // Show the soft keyboard
+                    if (imm != null) {
+                        imm.showSoftInput(textView, InputMethodManager.SHOW_IMPLICIT);
+                    }
+
                     Toast.makeText(HandwritingRecognition.this, "Editing Body", Toast.LENGTH_SHORT).show();
+
+                    hideTitleBar();
                 }
+
+                hideTitleBar();
             }
+
         });
+
+
+
+
+
+
 
 // Clear button logic to reset both textViews to non-editable state
-        btnClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawView.clear();
-                StrokeManager.clear();
-                if (radioTitle.isChecked()) {
-                    textViewT.setText("");
-                    // Make textViewT non-editable again
-                    textViewT.setFocusable(false);
-                    textViewT.setCursorVisible(false);
-                } else if (radioBody.isChecked()) {
-                    textView.setText("");
-                    // Make textView non-editable again
-                    textView.setFocusable(false);
-                    textView.setCursorVisible(false);
-                }
-            }
-        });
-
-
-
+//        btnClear.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                drawView.clear();
+//                StrokeManager.clear();
+//                if (radioTitle.isChecked()) {
+//                    textViewT.setText("");
+//                    // Make textViewT non-editable again
+//                    textViewT.setFocusable(false);
+//                    textViewT.setCursorVisible(false);
+//                } else if (radioBody.isChecked()) {
+//                    textView.setText("");
+//                    // Make textView non-editable again
+//                    textView.setFocusable(false);
+//                    textView.setCursorVisible(false);
+//                }
+//            }
+//        });
 
 
         // Clear button logic
@@ -152,23 +201,39 @@ public class HandwritingRecognition extends AppCompatActivity {
         });
 
         // Recognize button logic
+//        btnRecognize.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (radioTitle.isChecked()) {
+//                    // Recognize gesture for the title
+//                    StrokeManager.recognize(textViewT);
+//                    StrokeManager.clear();
+//                    drawView.clear();
+//                } else if (radioBody.isChecked()) {
+//                    // Recognize gesture for the body
+//                    StrokeManager.recognize(textView);
+//                    StrokeManager.clear();
+//                    drawView.clear();
+//                }
+//            }
+//        });
+
         btnRecognize.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (radioTitle.isChecked()) {
-                    // Recognize gesture for the title
+                    // Append recognized text to title
                     StrokeManager.recognize(textViewT);
                     StrokeManager.clear();
                     drawView.clear();
                 } else if (radioBody.isChecked()) {
-                    // Recognize gesture for the body
+                    // Append recognized text to body
                     StrokeManager.recognize(textView);
                     StrokeManager.clear();
                     drawView.clear();
                 }
             }
         });
-
 
         // Save button: Save the title text
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -196,6 +261,9 @@ public class HandwritingRecognition extends AppCompatActivity {
 
     // Method to show the DatePickerDialog
     private void showDatePickerDialog() {
+        // Get the button by its ID
+        Button buttonDatePicker = findViewById(R.id.calendar);
+
         // Get the current date
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -208,12 +276,15 @@ public class HandwritingRecognition extends AppCompatActivity {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+
+                        // Set the selected date as the button's text
+                        buttonDatePicker.setText(selectedDate);
+
                         Toast.makeText(HandwritingRecognition.this, "Selected date: " + selectedDate, Toast.LENGTH_SHORT).show();
                     }
                 }, year, month, day);
         datePickerDialog.show();
     }
-
 
     private void hideTitleBar() {
         this.getWindow().getDecorView().setSystemUiVisibility(

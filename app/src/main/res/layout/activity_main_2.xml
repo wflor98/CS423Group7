@@ -26,13 +26,17 @@
             android:drawablePadding="8dp"
             android:padding="12dp" />
 
-        <!-- Adjust padding to change size -->
+        <!-- Button for color palette -->
         <Button
             android:id="@+id/buttonColorPalette"
-            android:layout_width="68dp"
-            android:layout_height="68dp"
-            android:text="P" />
-        <!-- Button with Calendar Icon -->
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/baseline_palette_24"
+            android:drawablePadding="8dp"
+            android:padding="16dp"
+            />
+<!--        button for calendar-->
         <Button
             android:id="@+id/calendar"
             android:layout_width="0dp"

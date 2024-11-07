@@ -68,6 +68,22 @@ public class StrokeManager {
                 .addOnFailureListener(e -> Log.e(ContentValues.TAG, "Error downloading model: " + e));
     }
 
+//    public static void recognize(TextView textView) {
+//        if (model == null) {
+//            Log.e(ContentValues.TAG, "Model is not downloaded yet");
+//            return;
+//        }
+//
+//        DigitalInkRecognizer recognizer = DigitalInkRecognition.getClient(
+//                DigitalInkRecognizerOptions.builder(model).build());
+//
+//
+//        Ink ink = inkBuilder.build();
+//        recognizer.recognize(ink)
+//                .addOnSuccessListener(result -> textView.setText(result.getCandidates().get(0).getText()))
+//                .addOnFailureListener(e -> Log.e(ContentValues.TAG, "Error during recognition: " + e));
+//    }
+
     public static void recognize(TextView textView) {
         if (model == null) {
             Log.e(ContentValues.TAG, "Model is not downloaded yet");
@@ -77,12 +93,18 @@ public class StrokeManager {
         DigitalInkRecognizer recognizer = DigitalInkRecognition.getClient(
                 DigitalInkRecognizerOptions.builder(model).build());
 
-
         Ink ink = inkBuilder.build();
         recognizer.recognize(ink)
-                .addOnSuccessListener(result -> textView.setText(result.getCandidates().get(0).getText()))
+                .addOnSuccessListener(result -> {
+                    // Append the recognized text instead of replacing it
+                    String existingText = textView.getText().toString();
+                    String newText = result.getCandidates().get(0).getText();
+                    textView.setText(existingText + " " + newText);
+                })
                 .addOnFailureListener(e -> Log.e(ContentValues.TAG, "Error during recognition: " + e));
     }
+
+
 
     public static void clear() {
         inkBuilder = Ink.builder();
