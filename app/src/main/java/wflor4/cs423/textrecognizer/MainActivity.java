@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.gridlayout.widget.GridLayout;
 
@@ -21,11 +22,10 @@ import java.util.List;
 
 import android.content.Intent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
+import androidx.activity.result.ActivityResultLauncher;
 
 public class MainActivity extends AppCompatActivity implements GestureOverlayView.OnGesturePerformedListener {
     private GestureLibrary objLib;
-
     private List<View> taskList = new LinkedList<>();
     private List<TextView> heartList = new LinkedList<>();
     private List<TextView> exclamationList = new LinkedList<>();
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private GridLayout gridLayout;
 
     private FloatingActionButton fabAddTask;
-
+    private ActivityResultLauncher<Intent> handwritingLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,33 +50,53 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
         gridLayout = findViewById(R.id.gridLayout);  // Correct casting to androidx.gridlayout.widget.GridLayout
 
-        taskList.add(findViewById(R.id.tile1));
-        taskList.add(findViewById(R.id.tile2));
-        taskList.add(findViewById(R.id.tile3));
-        taskList.add(findViewById(R.id.tile4));
-        taskList.add(findViewById(R.id.tile5));
+        handwritingLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String taskTitle = result.getData().getStringExtra("savedTitle");
+                        String taskBody = result.getData().getStringExtra("savedBody");
+                        if (taskTitle != null && taskBody != null) {
 
-        heartList.add(findViewById(R.id.task1Heart));
-        heartList.add(findViewById(R.id.task2Heart));
-        heartList.add(findViewById(R.id.task3Heart));
-        heartList.add(findViewById(R.id.task4Heart));
-        heartList.add(findViewById(R.id.task5Heart));
+                            createTaskTile(taskTitle, taskBody);
+                        }
+                    }
+                    });
 
-        exclamationList.add(findViewById(R.id.task1Exclamation));
-        exclamationList.add(findViewById(R.id.task2Exclamation));
-        exclamationList.add(findViewById(R.id.task3Exclamation));
-        exclamationList.add(findViewById(R.id.task4Exclamation));
-        exclamationList.add(findViewById(R.id.task5Exclamation));
+        FloatingActionButton fabAddTask = findViewById(R.id.fab_add_task);
+        fabAddTask.setOnClickListener(v -> addNewTask());
 
-        fabAddTask = findViewById(R.id.fab_add_task);
-        fabAddTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, HandwritingRecognition.class);
-                startActivity(intent);
-            }
-        });
+    }
 
+    private void addNewTask() {
+        if (taskList.size() < 6) {
+            Intent intent = new Intent(MainActivity.this, HandwritingRecognition.class);
+            handwritingLauncher.launch(intent);
+        } else {
+            Toast.makeText(this, "Task limit reached", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+    private void createTaskTile(String title, String description) {
+        Toast.makeText(this, "Create task " + title + " " + description, Toast.LENGTH_SHORT).show();
+
+        View newTile = getLayoutInflater().inflate(R.layout.task_tile, gridLayout, false );
+
+        TextView titleView = newTile.findViewById(R.id.taskTitle);
+        TextView descriptionView = newTile.findViewById(R.id.taskDescription);
+        titleView.setText(title);
+        descriptionView.setText(description);
+
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+        params.width = GridLayout.LayoutParams.MATCH_PARENT;
+        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        params.setMargins(0, 16, 0, 16);
+        newTile.setLayoutParams(params);
+
+        gridLayout.addView(newTile);
+        taskList.add(newTile);
     }
 
     @Override
@@ -169,14 +189,6 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void addNewTask() {
-        if (taskList.size() < 6) {
-            Intent intent = new Intent(MainActivity.this, HandwritingRecognition.class);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "Task limit reached", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     private void handleCompleteTaskGesture(GestureOverlayView overlay, float lastX, float lastY) {
         for (int i = 0; i < taskList.size(); i++) {

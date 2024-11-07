@@ -175,19 +175,16 @@ public class HandwritingRecognition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                if (radioTitle.isChecked()) {
-                    // Save title text and pass it back to MainActivity
-                    String title = textViewT.getText().toString();
-                    intent.putExtra("savedText", title);  // Pass the title text
-                    intent.putExtra("type", "title");     // Indicate it's a title
-                } else if (radioBody.isChecked()) {
-                    // Save body text and pass it back to MainActivity
-                    String body = textView.getText().toString();
-                    intent.putExtra("savedText", body);   // Pass the body text
-                    intent.putExtra("type", "body");      // Indicate it's a body
-                }
+
+                String title = textViewT.getText().toString();
+                String body = textView.getText().toString();
+                intent.putExtra("savedTitle", title);   // Pass the body text
+                intent.putExtra("savedBody", body);      // Indicate it's a body
+
 
                 setResult(RESULT_OK, intent);  // Set the result to OK and attach the Intent
+//                Toast.makeText(HandwritingRecognition.this, "Intent", Toast.LENGTH_SHORT).show();
+
                 finish();  // Close this activity and return to MainActivity
             }
         });

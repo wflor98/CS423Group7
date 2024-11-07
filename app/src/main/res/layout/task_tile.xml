@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_margin="4dp"
+    android:background="@color/purple_500"
+    app:layout_columnWeight="1"
+    app:layout_gravity="fill_horizontal">
+
+>
+<!-- Task  -->
+    <TextView
+        android:id="@+id/taskTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Task Title"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize='24sp'/>
+<!--    <TextView-->
+<!--        android:id="@+id/taskDueDate"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Due: 00/00/00" />-->
+
+    <TextView
+        android:id="@+id/taskDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textColor="@color/white"/>
+
+    <!-- Heart and Exclamation Layout for task -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/task1Heart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="❤️"
+            android:textSize="24sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/task1Exclamation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="❗"
+            android:textSize="24sp"
+            android:layout_marginStart="8dp"
+            android:textColor="@android:color/holo_red_dark"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</LinearLayout>
