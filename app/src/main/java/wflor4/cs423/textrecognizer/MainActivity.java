@@ -1,5 +1,6 @@
 package wflor4.cs423.textrecognizer;
 
+import android.content.SharedPreferences;
 import android.gesture.Gesture;
 import android.gesture.GestureLibraries;
 import android.gesture.GestureLibrary;
@@ -8,6 +9,7 @@ import android.gesture.GestureStroke;
 import android.gesture.Prediction;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         objLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
         if (!objLib.load()) {
             finish();
@@ -49,6 +52,8 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         objOverlay.addOnGesturePerformedListener(this);
 
         gridLayout = findViewById(R.id.gridLayout);  // Correct casting to androidx.gridlayout.widget.GridLayout
+
+        loadTasksFromPreferences();
 
         handwritingLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -80,25 +85,82 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
 
     private void createTaskTile(String title, String description) {
-        Toast.makeText(this, "Create task " + title + " " + description, Toast.LENGTH_SHORT).show();
+        try {
 
-        View newTile = getLayoutInflater().inflate(R.layout.task_tile, gridLayout, false );
+            Log.d("Debug", "Creating task with title: " + title + " and description " + description);
+            View newTile = getLayoutInflater().inflate(R.layout.task_tile, gridLayout, false );
 
-        TextView titleView = newTile.findViewById(R.id.taskTitle);
-        TextView descriptionView = newTile.findViewById(R.id.taskDescription);
-        titleView.setText(title);
-        descriptionView.setText(description);
+            TextView titleView = newTile.findViewById(R.id.taskTitle);
+            TextView descriptionView = newTile.findViewById(R.id.taskDescription);
+            titleView.setText(title);
+            descriptionView.setText(description);
+//
+//        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+//        int columnWidth = screenWidth/2;
 
-        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = GridLayout.LayoutParams.MATCH_PARENT;
-        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        params.setMargins(0, 16, 0, 16);
-        newTile.setLayoutParams(params);
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+            params.width = 0;
+            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+            params.setMargins(8, 8, 8, 8);
+            newTile.setLayoutParams(params);
 
-        gridLayout.addView(newTile);
-        taskList.add(newTile);
+            gridLayout.addView(newTile);
+            taskList.add(newTile);
+
+            TextView heartView = newTile.findViewById(R.id.task1Heart);
+            TextView exclamationView = newTile.findViewById(R.id.task1Exclamation);
+
+            heartView.setVisibility(View.GONE);
+            exclamationView.setVisibility(View.GONE);
+
+            heartList.add(heartView);
+            exclamationList.add(exclamationView);
+
+            Log.d("Debug", "Task successfully added to gridLayout and taskList");
+        } catch (Exception e) {
+            Log.e("Debug", "Error in createTaskTile: " + e.getMessage());
+        }
+
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveTasksToPreferences();
+    }
+
+    private void saveTasksToPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("TaskPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.clear();
+
+        for (int i = 0; i < taskList.size(); i++) {
+            TextView titleView = taskList.get(i).findViewById(R.id.taskTitle);
+            TextView descriptionView = taskList.get(i).findViewById(R.id.taskDescription);
+            String title = titleView.getText().toString();
+            String description = descriptionView.getText().toString();
+
+            editor.putString("taskTitle_" + i, title);
+            editor.putString("taskDescription_" + i, description);
+        }
+
+        editor.putInt("taskCount", taskList.size());
+        editor.apply();
+    }
+
+    private void loadTasksFromPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("TaskPrefs", MODE_PRIVATE);
+        int taskCount = sharedPreferences.getInt("taskCount", 0);
+
+        for (int i = 0; i < taskCount; i++) {
+            String title = sharedPreferences.getString("taskTitle_" + i, "");
+            String description = sharedPreferences.getString("taskDescription_" + i, "");
+
+            createTaskTile(title, description);
+        }
+    }
     @Override
     public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
         ArrayList<Prediction> objPrediction = objLib.recognize(gesture);

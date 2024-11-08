@@ -11,7 +11,7 @@
     app:layout_columnWeight="1"
     app:layout_gravity="fill_horizontal">
 
->
+
 <!-- Task  -->
     <TextView
         android:id="@+id/taskTitle"
@@ -20,7 +20,7 @@
         android:text="Task Title"
         android:textStyle="bold"
         android:textColor="@color/white"
-        android:textSize='24sp'/>
+        android:textSize='18sp'/>
 <!--    <TextView-->
 <!--        android:id="@+id/taskDueDate"-->
 <!--        android:layout_width="wrap_content"-->
@@ -32,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Description"
+        android:textSize='16sp'
         android:textColor="@color/white"/>
 
     <!-- Heart and Exclamation Layout for task -->
@@ -60,5 +61,5 @@
             android:textColor="@android:color/holo_red_dark"
             android:visibility="gone" />
     </LinearLayout>
-
 </LinearLayout>
+
