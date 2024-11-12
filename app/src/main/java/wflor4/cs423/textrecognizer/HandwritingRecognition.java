@@ -28,7 +28,7 @@ public class HandwritingRecognition extends AppCompatActivity {
     private TextView textView, textViewT;
     private RadioGroup radioGroup;
     private RadioButton radioTitle, radioBody;
-
+    private String selectedDate = "";
     int defaultColor;
 
 
@@ -180,10 +180,10 @@ public class HandwritingRecognition extends AppCompatActivity {
                 String body = textView.getText().toString();
                 intent.putExtra("savedTitle", title);   // Pass the body text
                 intent.putExtra("savedBody", body);      // Indicate it's a body
-
+                intent.putExtra("selectedDate", selectedDate);
 
                 setResult(RESULT_OK, intent);  // Set the result to OK and attach the Intent
-//                Toast.makeText(HandwritingRecognition.this, "Intent", Toast.LENGTH_SHORT).show();
+//               Toast.makeText(HandwritingRecognition.this, "Intent", Toast.LENGTH_SHORT).show();
 
                 finish();  // Close this activity and return to MainActivity
             }
@@ -204,7 +204,7 @@ public class HandwritingRecognition extends AppCompatActivity {
                 new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+                        selectedDate = (monthOfYear + 1)  + "/" + dayOfMonth + "/" + year;
                         Toast.makeText(HandwritingRecognition.this, "Selected date: " + selectedDate, Toast.LENGTH_SHORT).show();
                     }
                 }, year, month, day);

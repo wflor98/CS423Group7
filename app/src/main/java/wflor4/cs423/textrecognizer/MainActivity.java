@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         GestureOverlayView objOverlay = (GestureOverlayView) findViewById(R.id.gestureOverlay);
         objOverlay.addOnGesturePerformedListener(this);
 
+        objOverlay.setGestureStrokeLengthThreshold(1f);
+        objOverlay.setGestureStrokeAngleThreshold(180f);
+        objOverlay.setGestureStrokeSquarenessTreshold(0.5f);
+        objOverlay.setGestureStrokeWidth(10f);
         gridLayout = findViewById(R.id.gridLayout);  // Correct casting to androidx.gridlayout.widget.GridLayout
 
         loadTasksFromPreferences();
@@ -61,9 +65,10 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         String taskTitle = result.getData().getStringExtra("savedTitle");
                         String taskBody = result.getData().getStringExtra("savedBody");
+                        String taskDate = result.getData().getStringExtra("selectedDate");
                         if (taskTitle != null && taskBody != null) {
 
-                            createTaskTile(taskTitle, taskBody);
+                            createTaskTile(taskTitle, taskBody, taskDate);
                         }
                     }
                     });
@@ -83,20 +88,17 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     }
 
 
-
-    private void createTaskTile(String title, String description) {
+    private void createTaskTile(String title, String description, String date) {
         try {
-
             Log.d("Debug", "Creating task with title: " + title + " and description " + description);
             View newTile = getLayoutInflater().inflate(R.layout.task_tile, gridLayout, false );
 
             TextView titleView = newTile.findViewById(R.id.taskTitle);
             TextView descriptionView = newTile.findViewById(R.id.taskDescription);
+            TextView dateView = newTile.findViewById(R.id.taskDate);
             titleView.setText(title);
             descriptionView.setText(description);
-//
-//        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-//        int columnWidth = screenWidth/2;
+            dateView.setText(date);
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
@@ -157,13 +159,44 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         for (int i = 0; i < taskCount; i++) {
             String title = sharedPreferences.getString("taskTitle_" + i, "");
             String description = sharedPreferences.getString("taskDescription_" + i, "");
+            String date = sharedPreferences.getString("taskDate_" + i, "");
 
-            createTaskTile(title, description);
+            createTaskTile(title, description, date);
         }
     }
     @Override
     public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
-        ArrayList<Prediction> objPrediction = objLib.recognize(gesture);
+        Log.d("Debug", "onGesturePerformed");
+
+        if (isExclamationGesture(gesture)) {
+            Log.d("Debug", "Exclamation gesture detected");
+            int[] gestureOverlayLocation = new int[2];
+            overlay.getLocationOnScreen(gestureOverlayLocation);
+
+            GestureStroke firstStroke = gesture.getStrokes().get(0);
+            float[] firstStrokePoints = firstStroke.points;
+
+            float lastX = firstStrokePoints[0] + gestureOverlayLocation[0];
+            float lastY = firstStrokePoints[1] + gestureOverlayLocation[1];
+
+            handleExclamationGesture(overlay, lastX, lastY);
+        } else if (isCrossGesture(gesture)) {
+            Log.d("Debug", "Cross gesture detected");
+            int[] gestureOverlayLocation = new int[2];
+            overlay.getLocationOnScreen(gestureOverlayLocation);
+            Log.d("Debug", "Cross gesture detected");
+
+            GestureStroke firstStroke = gesture.getStrokes().get(0);
+            float[] firstStrokePoints = firstStroke.points;
+
+            float lastX = firstStrokePoints[0] + gestureOverlayLocation[0];
+            float lastY = firstStrokePoints[1] + gestureOverlayLocation[1];
+
+            handleRemoveTaskGesture(overlay, lastX, lastY);
+        } else {
+            Log.d("Debug", "not ! or X ");
+
+            ArrayList<Prediction> objPrediction = objLib.recognize(gesture);
 
         if (!objPrediction.isEmpty() && objPrediction.get(0).score > 4) {
             String gestureName = objPrediction.get(0).name;
@@ -179,23 +212,90 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
             if (gestureName.startsWith("heart")) {
                 handleHeartGesture(overlay, lastX, lastY);
-            } else if (gestureName.startsWith("exclamation")) {
-                handleExclamationGesture(overlay, lastX, lastY);
+//            } else if (gestureName.startsWith("exclamation")) {
+//                handleExclamationGesture(overlay, lastX, lastY);
             } else if (gestureName.startsWith("square")) {
                 addNewTask();
-            } else if (gestureName.startsWith("cross")) {
-                handleRemoveTaskGesture(overlay, lastX, lastY);
+//            } else if (gestureName.startsWith("cross")) {
+//                handleRemoveTaskGesture(overlay, lastX, lastY);
             } else if (gestureName.startsWith("checkmark")) {
                 handleCompleteTaskGesture(overlay, lastX, lastY);
             }
         } else {
             Toast.makeText(this, "No gesture detected", Toast.LENGTH_SHORT).show();
         }
+        }
+    }
+
+    private boolean isExclamationGesture(Gesture gesture) {
+        if (gesture.getStrokes().size() != 2) return false;
+
+        GestureStroke lineStroke = gesture.getStrokes().get(0);
+        GestureStroke dotStroke = gesture.getStrokes().get(1);
+
+        float [] linePoints = lineStroke.points;
+        float [] dotPoints = dotStroke.points;
+
+        float lineStartX = linePoints[0];
+        float lineEndX = linePoints[linePoints.length - 2];
+        float lineStartY = linePoints[1];
+        float lineEndY = linePoints[linePoints.length - 1];
+
+        float lineDeltaX = Math.abs(lineStartX - lineEndX);
+        float lineDeltaY = Math.abs(lineStartY - lineEndY);
+
+        boolean isVerticalLine = lineDeltaX < 15 && lineDeltaY > 60;
+
+        float dotStartX = dotPoints[0];
+        float dotEndX = dotPoints[dotPoints.length - 2];
+        float dotStartY = dotPoints[1];
+        float dotEndY = dotPoints[dotPoints.length - 1];
+
+        float dotDistance = (float) Math.sqrt(Math.pow(dotEndX - dotStartX, 2) + Math.pow(dotEndY - dotStartY, 2));
+        boolean isDotSmall = dotDistance < 30;
+
+        boolean isDotBelowLine = dotStartY > lineEndY && Math.abs(dotStartX - lineEndX) < 15;
+        return isVerticalLine && isDotBelowLine && isDotSmall;
+    }
+
+    private boolean isCrossGesture(Gesture gesture) {
+        if (gesture.getStrokes().size() != 2) return false;
+
+        GestureStroke stroke1 = gesture.getStrokes().get(0);
+        GestureStroke stroke2 = gesture.getStrokes().get(1);
+
+        float[] points1 = stroke1.points;
+        float[] points2 = stroke2.points;
+
+        float startX1 = points1[0];
+        float startY1 = points1[1];
+        float endX1 = points1[points1.length - 2];
+        float endY1 = points1[points1.length -1];
+
+        float startX2 = points2[0];
+        float startY2 = points2[1];
+        float endX2 = points2[points2.length - 2];
+        float endY2 = points2[points2.length - 1];
+
+        double angle1 = Math.atan2(endY1 - startY1, endX1 - startX1);
+        double angle2 = Math.atan2(endY2 - startY2, endX2 - startX2);
+
+        boolean isCrossed = Math.abs(Math.toDegrees(angle1 - angle2)) > 60 && Math.abs(Math.toDegrees(angle1 - angle2)) < 120;
+
+        float midX1 = (startX1 + endX1) / 2;
+        float midY1 = (startY1 + endY1) / 2;
+        float midX2 = (startX2 + endX2) / 2;
+        float midY2 = (startY2 + endY2) / 2;
+
+        boolean isIntersectingNearCenter = Math.hypot(midX1 - midX2, midY1 - midY2) < 30;
+
+        return isCrossed && isIntersectingNearCenter;
     }
 
     private void handleHeartGesture(GestureOverlayView overlay, float lastX, float lastY) {
         for (int i = 0; i < taskList.size(); i++) {
             if (isGestureInView(taskList.get(i), lastX, lastY)) {
+                Log.d("Debug", "Heart found. lastX: " + lastX + " lastY: " + lastY);
                 toggleHeart(heartList.get(i), i + 1);
                 return;
             }
@@ -203,19 +303,33 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     }
 
     private void handleExclamationGesture(GestureOverlayView overlay, float lastX, float lastY) {
+        Log.d("Debug", "handleExclamationGesture");
+
         for (int i = 0; i < taskList.size(); i++) {
             if (isGestureInView(taskList.get(i), lastX, lastY)) {
+                Log.d("Debug", "Exclamation task found");
                 toggleExclamation(exclamationList.get(i), i + 1);
                 return;
+            } else {
+                Log.d("Debug", "Exclamation task not found lastX: " + lastX + " lastY: " + lastY);
+
             }
         }
     }
 
     private void handleRemoveTaskGesture(GestureOverlayView overlay, float lastX, float lastY) {
+        Log.d("Debug", "handleRemoveTaskGesture");
+
         for (int i = 0; i < taskList.size(); i++) {
+            Log.d("Debug", "Task: " + i);
+
             if (isGestureInView(taskList.get(i), lastX, lastY)) {
+                Log.d("Debug", "Remove task found");
                 removeTask(i);
                 return;
+            } else {
+                Log.d("Debug", "Remove task not found: " + lastX + " lastY: " + lastY);
+
             }
         }
     }
@@ -243,7 +357,12 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private boolean isGestureInView(View view, float x, float y) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
+        Log.d("Debug", "Tile location: " + location[0] + " " + location[1]);
         Rect rect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
+
+        Log.d("Debug", "Tile location contains: " + view.getWidth() + " " + view.getHeight());
+        Log.d("Debug", "Tile location contains: " + rect.contains((int) x, (int) y));
+
         return rect.contains((int) x, (int) y);
     }
 
@@ -255,6 +374,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private void handleCompleteTaskGesture(GestureOverlayView overlay, float lastX, float lastY) {
         for (int i = 0; i < taskList.size(); i++) {
             if (isGestureInView(taskList.get(i), lastX, lastY)) {
+                Log.d("Debug", "Heart found. lastX: " + lastX + " lastY: " + lastY);
                 completeTask(i);
                 return;
             }
