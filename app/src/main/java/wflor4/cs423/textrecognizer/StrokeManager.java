@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.TextView;
-
 import com.google.mlkit.common.MlKitException;
 import com.google.mlkit.common.model.DownloadConditions;
 import com.google.mlkit.common.model.RemoteModelManager;
@@ -77,10 +76,13 @@ public class StrokeManager {
         DigitalInkRecognizer recognizer = DigitalInkRecognition.getClient(
                 DigitalInkRecognizerOptions.builder(model).build());
 
-
         Ink ink = inkBuilder.build();
         recognizer.recognize(ink)
-                .addOnSuccessListener(result -> textView.setText(result.getCandidates().get(0).getText()))
+                .addOnSuccessListener(result -> {
+                    String recognizedText = result.getCandidates().get(0).getText();
+                    String currentText = textView.getText().toString();
+                    textView.setText(currentText + " " + recognizedText);  // Append recognized text to existing text
+                })
                 .addOnFailureListener(e -> Log.e(ContentValues.TAG, "Error during recognition: " + e));
     }
 

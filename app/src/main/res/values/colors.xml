@@ -7,4 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="shiny_green">#39FF14</color> <!-- Neon green shade -->
+    <color name="grey">#888888</color>
+    <color name="yellow">#FFF200</color>
 </resources>
