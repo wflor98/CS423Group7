@@ -13,13 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="144dp"
         android:text="Tasks"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
 />
 
     <androidx.gridlayout.widget.GridLayout
@@ -76,6 +76,9 @@
         android:id="@+id/gestureOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gestureStrokeType="multiple"
+        android:eventsInterceptionEnabled="true"
+        android:gestureStrokeWidth="10"
         android:gestureColor="#FF0000"
         android:uncertainGestureColor="#00FF00"
         android:fadeOffset="1000" />
