@@ -36,6 +36,10 @@ public class HandwritingRecognition extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_2);
 
+        Button btnClearDrawView = findViewById(R.id.btnClearDrawView);
+
+
+
         // Bind UI elements to their respective IDs
         btnRecognize = findViewById(R.id.buttonRecognize);
         btnClear = findViewById(R.id.buttonClear);
@@ -59,6 +63,15 @@ public class HandwritingRecognition extends AppCompatActivity {
 //        hideTitleBar();
 
         StrokeManager.download();
+
+        btnClearDrawView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawView.clear();  // Clear the DrawView
+                StrokeManager.clear();  // Clear the StrokeManager
+                Toast.makeText(HandwritingRecognition.this, "DrawView Cleared", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
