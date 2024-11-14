@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         float lineDeltaX = Math.abs(lineStartX - lineEndX);
         float lineDeltaY = Math.abs(lineStartY - lineEndY);
 
-        boolean isVerticalLine = lineDeltaX < 15 && lineDeltaY > 60;
+        boolean isVerticalLine = lineDeltaX < 30 && lineDeltaY > 40;
 
         float dotStartX = dotPoints[0];
         float dotEndX = dotPoints[dotPoints.length - 2];
@@ -342,9 +342,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         float dotEndY = dotPoints[dotPoints.length - 1];
 
         float dotDistance = (float) Math.sqrt(Math.pow(dotEndX - dotStartX, 2) + Math.pow(dotEndY - dotStartY, 2));
-        boolean isDotSmall = dotDistance < 30;
+        boolean isDotSmall = dotDistance < 40;
 
-        boolean isDotBelowLine = dotStartY > lineEndY && Math.abs(dotStartX - lineEndX) < 15;
+        boolean isDotBelowLine = dotStartY > lineEndY && Math.abs(dotStartX - lineEndX) < 30;
         return isVerticalLine && isDotBelowLine && isDotSmall;
     }
 
@@ -370,14 +370,14 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         double angle1 = Math.atan2(endY1 - startY1, endX1 - startX1);
         double angle2 = Math.atan2(endY2 - startY2, endX2 - startX2);
 
-        boolean isCrossed = Math.abs(Math.toDegrees(angle1 - angle2)) > 60 && Math.abs(Math.toDegrees(angle1 - angle2)) < 120;
+        boolean isCrossed = Math.abs(Math.toDegrees(angle1 - angle2)) > 45 && Math.abs(Math.toDegrees(angle1 - angle2)) < 135;
 
         float midX1 = (startX1 + endX1) / 2;
         float midY1 = (startY1 + endY1) / 2;
         float midX2 = (startX2 + endX2) / 2;
         float midY2 = (startY2 + endY2) / 2;
 
-        boolean isIntersectingNearCenter = Math.hypot(midX1 - midX2, midY1 - midY2) < 30;
+        boolean isIntersectingNearCenter = Math.hypot(midX1 - midX2, midY1 - midY2) < 50;
 
         return isCrossed && isIntersectingNearCenter;
     }
@@ -447,8 +447,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private boolean isGestureInView(View view, float x, float y) {
         int[] location = new int[2];
         view.getLocationOnScreen(location);
+        int padding = 25;
         Log.d("Debug", "Tile location: " + location[0] + " " + location[1]);
-        Rect rect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
+        Rect rect = new Rect(location[0], location[1], location[0] + view.getWidth() + padding, location[1] + view.getHeight() + padding);
 
         Log.d("Debug", "Tile location contains: " + view.getWidth() + " " + view.getHeight());
         Log.d("Debug", "Tile location contains: " + rect.contains((int) x, (int) y));
