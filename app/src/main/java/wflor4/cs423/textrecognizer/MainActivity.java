@@ -11,11 +11,13 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.gridlayout.widget.GridLayout;
 
 import java.util.ArrayList;
@@ -36,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
     private FloatingActionButton fabAddTask;
     private ActivityResultLauncher<Intent> handwritingLauncher;
+    private boolean gestureDetectionEnabled = true; // flag to track gesture detection status
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,22 +80,39 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         FloatingActionButton fabAddTask = findViewById(R.id.fab_add_task);
         fabAddTask.setOnClickListener(v -> addNewTask());
 
+        SwitchCompat switchGesture = findViewById(R.id.switch_gesture);
+        GestureOverlayView gestureOverlay = findViewById(R.id.gestureOverlay);
+
+        switchGesture.setChecked(true);
+        gestureDetectionEnabled = true;
+        gestureOverlay.setVisibility(View.VISIBLE);
+
+        switchGesture.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            gestureDetectionEnabled = isChecked;
+
+            if (isChecked) {
+                gestureOverlay.setVisibility(View.VISIBLE);
+            } else {
+                gestureOverlay.setVisibility(View.GONE);
+            }
+
+            Toast.makeText(MainActivity.this,
+                    "Gesture detection " + (isChecked ? "enabled" : "disabled"),
+                    Toast.LENGTH_SHORT).show();
+        });
+
     }
 
     private void addNewTask() {
-        if (taskList.size() < 6) {
-            Intent intent = new Intent(MainActivity.this, HandwritingRecognition.class);
-            handwritingLauncher.launch(intent);
-        } else {
-            Toast.makeText(this, "Task limit reached", Toast.LENGTH_SHORT).show();
-        }
+        Intent intent = new Intent(MainActivity.this, HandwritingRecognition.class);
+        handwritingLauncher.launch(intent);
     }
 
 
     private void createTaskTile(String title, String description, String date) {
         try {
             Log.d("Debug", "Creating task with title: " + title + " and description " + description);
-            View newTile = getLayoutInflater().inflate(R.layout.task_tile, gridLayout, false );
+            View newTile = getLayoutInflater().inflate(R.layout.task_tile, gridLayout, false);
 
             TextView titleView = newTile.findViewById(R.id.taskTitle);
             TextView descriptionView = newTile.findViewById(R.id.taskDescription);
@@ -106,6 +127,13 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             params.setMargins(8, 8, 8, 8);
             newTile.setLayoutParams(params);
+
+            newTile.setOnLongClickListener(view -> {
+                if (!gestureDetectionEnabled) {
+                    showTaskOptionsMenu(view);
+                }
+                return true;
+            });
 
             gridLayout.addView(newTile);
             taskList.add(newTile);
@@ -123,7 +151,37 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         } catch (Exception e) {
             Log.e("Debug", "Error in createTaskTile: " + e.getMessage());
         }
+    }
 
+    private void showTaskOptionsMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.getMenuInflater().inflate(R.menu.task_options_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            int taskIndex = taskList.indexOf(view);
+            int itemId = menuItem.getItemId();
+            if (itemId == R.id.menu_favor) {
+                toggleHeart(heartList.get(taskIndex), taskIndex + 1);
+                return true;
+            } else if (itemId == R.id.menu_urgent) {
+                toggleExclamation(exclamationList.get(taskIndex), taskIndex + 1);
+                return true;
+            } else if (itemId == R.id.menu_edit) {
+                editTask(taskIndex);
+                return true;
+            } else if (itemId == R.id.menu_delete) {
+                removeTask(taskIndex);
+                return true;
+            } else {
+                return false;
+            }
+        });
+
+        popupMenu.show();
+    }
+
+    private void editTask(int taskIndex) {
+        // TODO
     }
 
     @Override
@@ -166,6 +224,10 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     }
     @Override
     public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
+        if (!gestureDetectionEnabled) {
+            Log.d("Debug", "Gesture detection is disabled");
+            return;
+        }
         Log.d("Debug", "onGesturePerformed");
 
         if (isExclamationGesture(gesture)) {
