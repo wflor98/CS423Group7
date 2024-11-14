@@ -69,13 +69,23 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         String taskTitle = result.getData().getStringExtra("savedTitle");
                         String taskBody = result.getData().getStringExtra("savedBody");
-                        String taskDate = result.getData().getStringExtra("selectedDate");
-                        if (taskTitle != null && taskBody != null) {
+                        boolean isEditMode = result.getData().getBooleanExtra("isEditMode", false);
+                        int taskIndex = result.getData().getIntExtra("taskIndex", -1);
 
-                            createTaskTile(taskTitle, taskBody, taskDate);
+                        if (isEditMode && taskIndex >= 0 && taskIndex < taskList.size()) {
+                            updateTaskTile(taskIndex, taskTitle, taskBody);
+                        } else {
+                            if (taskTitle != null && !taskTitle.trim().isEmpty() && !taskTitle.equalsIgnoreCase("Title")) {
+                                createTaskTile(taskTitle, taskBody, result.getData().getStringExtra("selectedDate"));
+                            } else {
+                                Toast.makeText(MainActivity.this, "Please provide a valid title for the task.", Toast.LENGTH_SHORT).show();
+                                addNewTask();
+                            }
                         }
                     }
-                    });
+                }
+        );
+
 
         FloatingActionButton fabAddTask = findViewById(R.id.fab_add_task);
         fabAddTask.setOnClickListener(v -> addNewTask());
@@ -101,6 +111,15 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                     Toast.LENGTH_SHORT).show();
         });
 
+    }
+
+    private void updateTaskTile(int taskIndex, String newTitle, String newBody) {
+        View taskTile = taskList.get(taskIndex);
+        TextView titleView = taskTile.findViewById(R.id.taskTitle);
+        TextView bodyView = taskTile.findViewById(R.id.taskDescription);
+
+        titleView.setText(newTitle);
+        bodyView.setText(newBody);
     }
 
     private void addNewTask() {
@@ -181,7 +200,16 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     }
 
     private void editTask(int taskIndex) {
-        // TODO
+        Intent intent = new Intent(MainActivity.this, HandwritingRecognition.class);
+
+        TextView titleView = taskList.get(taskIndex).findViewById(R.id.taskTitle);
+        TextView bodyView = taskList.get(taskIndex).findViewById(R.id.taskDescription);
+
+        intent.putExtra("editTitle", titleView.getText().toString());
+        intent.putExtra("editBody", bodyView.getText().toString());
+        intent.putExtra("taskIndex", taskIndex);
+
+        handwritingLauncher.launch(intent);
     }
 
     @Override

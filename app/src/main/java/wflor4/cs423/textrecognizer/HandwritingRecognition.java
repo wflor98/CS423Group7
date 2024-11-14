@@ -36,10 +36,6 @@ public class HandwritingRecognition extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_2);
 
-        Button btnClearDrawView = findViewById(R.id.btnClearDrawView);
-
-
-
         // Bind UI elements to their respective IDs
         btnRecognize = findViewById(R.id.buttonRecognize);
         btnClear = findViewById(R.id.buttonClear);
@@ -59,6 +55,35 @@ public class HandwritingRecognition extends AppCompatActivity {
 
         defaultColor = ContextCompat.getColor(HandwritingRecognition.this, R.color.black);
 
+        textViewT = findViewById(R.id.textResult_title); // Title CheckedTextView
+        textView = findViewById(R.id.textResult);        // Body TextView
+
+        String editTitle = getIntent().getStringExtra("editTitle");
+        String editBody = getIntent().getStringExtra("editBody");
+
+        if (editTitle != null) {
+            textViewT.setText(editTitle);
+        }
+        if (editBody != null) {
+            textView.setText(editBody);
+        }
+
+        btnSave.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            intent.putExtra("savedTitle", textViewT.getText().toString());
+            intent.putExtra("savedBody", textView.getText().toString());
+
+            if (editTitle != null || editBody != null) {
+                intent.putExtra("isEditMode", true);
+                int taskIndex = getIntent().getIntExtra("taskIndex", -1);
+                intent.putExtra("taskIndex", taskIndex);
+            }
+
+            setResult(RESULT_OK, intent);
+            finish();
+        });
+
+        Button btnClearDrawView = findViewById(R.id.btnClearDrawView);
 
 //        hideTitleBar();
 
@@ -205,25 +230,24 @@ public class HandwritingRecognition extends AppCompatActivity {
             }
         });
 
-
         // Save button: Save the title text
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-
-                String title = textViewT.getText().toString();
-                String body = textView.getText().toString();
-                intent.putExtra("savedTitle", title);   // Pass the body text
-                intent.putExtra("savedBody", body);      // Indicate it's a body
-
-
-                setResult(RESULT_OK, intent);  // Set the result to OK and attach the Intent
-//                Toast.makeText(HandwritingRecognition.this, "Intent", Toast.LENGTH_SHORT).show();
-
-                finish();  // Close this activity and return to MainActivity
-            }
-        });
+//        btnSave.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent();
+//
+//                String title = textViewT.getText().toString();
+//                String body = textView.getText().toString();
+//                intent.putExtra("savedTitle", title);   // Pass the body text
+//                intent.putExtra("savedBody", body);      // Indicate it's a body
+//
+//
+//                setResult(RESULT_OK, intent);  // Set the result to OK and attach the Intent
+////                Toast.makeText(HandwritingRecognition.this, "Intent", Toast.LENGTH_SHORT).show();
+//
+//                finish();  // Close this activity and return to MainActivity
+//            }
+//        });
         Toast.makeText(HandwritingRecognition.this, "Writing enabled: Currently Editing Title", Toast.LENGTH_SHORT).show();
     }
 
