@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     private FloatingActionButton fabAddTask;
     private ActivityResultLauncher<Intent> handwritingLauncher;
     private boolean gestureDetectionEnabled = true; // flag to track gesture detection status
+    private boolean isTemplateTileAdded = false;
 
 
     @Override
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         gridLayout = findViewById(R.id.gridLayout);  // Correct casting to androidx.gridlayout.widget.GridLayout
 
         loadTasksFromPreferences();
+        createTemplateTile();
 
         handwritingLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -118,6 +120,26 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
     }
 
+    private void createTemplateTile() {
+        if (isTemplateTileAdded) {
+            return;
+        }
+
+        View templateTile = getLayoutInflater().inflate(R.layout.task_template_tile, gridLayout, false);
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+        params.width = 0;
+        params.height = 300;
+        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+        params.setMargins(8, 8, 8, 8);
+        templateTile.setLayoutParams(params);
+        Toast.makeText(MainActivity.this,
+                "templete not added",
+                Toast.LENGTH_SHORT).show();
+
+        gridLayout.addView(templateTile, 0);
+        isTemplateTileAdded = true;
+    }
+
     private void updateTaskTile(int taskIndex, String newTitle, String newBody, String newDate, int color) {
         if (taskIndex >= 0 && taskIndex < taskList.size()) {
             View taskTile = taskList.get(taskIndex);
@@ -157,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             titleView.setText(title);
             descriptionView.setText(description);
 
-            if (date == null || date.trim().isEmpty() || date.equals("00/00/00")) {
+            if (date == null || date.trim().isEmpty() || date.equals("00/00/00") || date.equals("Calendar")) {
                 dateView.setVisibility(View.GONE);
             } else {
                 dateView.setText("Due: " + date);
@@ -280,15 +302,20 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         SharedPreferences sharedPreferences = getSharedPreferences("TaskPrefs", MODE_PRIVATE);
         int taskCount = sharedPreferences.getInt("taskCount", 0);
 
-        for (int i = 0; i < taskCount; i++) {
-            String title = sharedPreferences.getString("taskTitle_" + i, "");
-            String description = sharedPreferences.getString("taskDescription_" + i, "");
-            String date = sharedPreferences.getString("taskDate_" + i, "");
-            int color = sharedPreferences.getInt("taskColor_" + i, ContextCompat.getColor(this, R.color.default_task_background));
+        if (taskCount == 0) {
+            createTemplateTile();
+        } else {
+            for (int i = 0; i < taskCount; i++) {
+                String title = sharedPreferences.getString("taskTitle_" + i, "");
+                String description = sharedPreferences.getString("taskDescription_" + i, "");
+                String date = sharedPreferences.getString("taskDate_" + i, "");
+                int color = sharedPreferences.getInt("taskColor_" + i, ContextCompat.getColor(this, R.color.default_task_background));
 
-            createTaskTile(title, description, date, color);
+                createTaskTile(title, description, date, color);
+            }
         }
     }
+
     @Override
     public void onGesturePerformed(GestureOverlayView overlay, Gesture gesture) {
         if (!gestureDetectionEnabled) {
