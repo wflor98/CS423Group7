@@ -8,6 +8,7 @@ import android.gesture.GestureOverlayView;
 import android.gesture.GestureStroke;
 import android.gesture.Prediction;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
 import androidx.gridlayout.widget.GridLayout;
 
 import java.util.ArrayList;
@@ -69,14 +71,17 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         String taskTitle = result.getData().getStringExtra("savedTitle");
                         String taskBody = result.getData().getStringExtra("savedBody");
+                        String taskDate = result.getData().getStringExtra("selectedDate");
+                        int selectedColor = result.getData().getIntExtra("selectedColor", ContextCompat.getColor(this, R.color.default_task_background));
+
                         boolean isEditMode = result.getData().getBooleanExtra("isEditMode", false);
                         int taskIndex = result.getData().getIntExtra("taskIndex", -1);
 
                         if (isEditMode && taskIndex >= 0 && taskIndex < taskList.size()) {
-                            updateTaskTile(taskIndex, taskTitle, taskBody);
+                            updateTaskTile(taskIndex, taskTitle, taskBody, taskDate, selectedColor);
                         } else {
                             if (taskTitle != null && !taskTitle.trim().isEmpty() && !taskTitle.equalsIgnoreCase("Title")) {
-                                createTaskTile(taskTitle, taskBody, result.getData().getStringExtra("selectedDate"));
+                                createTaskTile(taskTitle, taskBody, taskDate, selectedColor);
                             } else {
                                 Toast.makeText(MainActivity.this, "Please provide a valid title for the task.", Toast.LENGTH_SHORT).show();
                                 addNewTask();
@@ -113,13 +118,18 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
     }
 
-    private void updateTaskTile(int taskIndex, String newTitle, String newBody) {
-        View taskTile = taskList.get(taskIndex);
-        TextView titleView = taskTile.findViewById(R.id.taskTitle);
-        TextView bodyView = taskTile.findViewById(R.id.taskDescription);
+    private void updateTaskTile(int taskIndex, String newTitle, String newBody, String date, int color) {
+        if (taskIndex >= 0 && taskIndex < taskList.size()) {
+            View taskTile = taskList.get(taskIndex);
+            TextView titleView = taskTile.findViewById(R.id.taskTitle);
+            TextView bodyView = taskTile.findViewById(R.id.taskDescription);
+            TextView dateView = taskTile.findViewById(R.id.taskDate);
 
-        titleView.setText(newTitle);
-        bodyView.setText(newBody);
+            titleView.setText(newTitle);
+            bodyView.setText(newBody);
+            dateView.setText(date);
+            taskTile.setBackgroundColor(color);
+        }
     }
 
     private void addNewTask() {
@@ -128,17 +138,20 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
     }
 
 
-    private void createTaskTile(String title, String description, String date) {
+    private void createTaskTile(String title, String description, String date, int color) {
         try {
-            Log.d("Debug", "Creating task with title: " + title + " and description " + description);
+            Log.d("Debug", "Creating task with title: " + title + ", description: " + description + ", date: " + date);
             View newTile = getLayoutInflater().inflate(R.layout.task_tile, gridLayout, false);
 
             TextView titleView = newTile.findViewById(R.id.taskTitle);
             TextView descriptionView = newTile.findViewById(R.id.taskDescription);
             TextView dateView = newTile.findViewById(R.id.taskDate);
+
             titleView.setText(title);
             descriptionView.setText(description);
             dateView.setText(date);
+
+            newTile.setBackgroundColor(color);
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
@@ -227,11 +240,16 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         for (int i = 0; i < taskList.size(); i++) {
             TextView titleView = taskList.get(i).findViewById(R.id.taskTitle);
             TextView descriptionView = taskList.get(i).findViewById(R.id.taskDescription);
+            View taskTile = taskList.get(i);
+
             String title = titleView.getText().toString();
             String description = descriptionView.getText().toString();
+            int color = ((ColorDrawable) taskTile.getBackground()).getColor();
 
             editor.putString("taskTitle_" + i, title);
             editor.putString("taskDescription_" + i, description);
+            editor.putString("taskDate_" + i, sharedPreferences.getString("taskDate_" + i, ""));
+            editor.putInt("taskColor_" + i, color);
         }
 
         editor.putInt("taskCount", taskList.size());
@@ -246,8 +264,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             String title = sharedPreferences.getString("taskTitle_" + i, "");
             String description = sharedPreferences.getString("taskDescription_" + i, "");
             String date = sharedPreferences.getString("taskDate_" + i, "");
+            int color = sharedPreferences.getInt("taskColor_" + i, ContextCompat.getColor(this, R.color.default_task_background));
 
-            createTaskTile(title, description, date);
+            createTaskTile(title, description, date, color);
         }
     }
     @Override

@@ -72,6 +72,7 @@ public class HandwritingRecognition extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra("savedTitle", textViewT.getText().toString());
             intent.putExtra("savedBody", textView.getText().toString());
+            intent.putExtra("selectedColor", defaultColor);
 
             if (editTitle != null || editBody != null) {
                 intent.putExtra("isEditMode", true);
