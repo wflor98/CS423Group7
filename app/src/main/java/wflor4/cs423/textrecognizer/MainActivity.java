@@ -371,8 +371,8 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
             if (gestureName.startsWith("heart")) {
                 handleHeartGesture(overlay, lastX, lastY);
-//            } else if (gestureName.startsWith("exclamation")) {
-//                handleExclamationGesture(overlay, lastX, lastY);
+            } else if (gestureName.startsWith("exclamation")) {
+                handleExclamationGesture(overlay, lastX, lastY);
             } else if (gestureName.startsWith("square")) {
                 addNewTask();
 //            } else if (gestureName.startsWith("cross")) {
@@ -403,7 +403,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         float lineDeltaX = Math.abs(lineStartX - lineEndX);
         float lineDeltaY = Math.abs(lineStartY - lineEndY);
 
-        boolean isVerticalLine = lineDeltaX < 30 && lineDeltaY > 40;
+        boolean isVerticalLine = lineDeltaX < 40 && lineDeltaY > 50;
 
         float dotStartX = dotPoints[0];
         float dotEndX = dotPoints[dotPoints.length - 2];
@@ -411,9 +411,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         float dotEndY = dotPoints[dotPoints.length - 1];
 
         float dotDistance = (float) Math.sqrt(Math.pow(dotEndX - dotStartX, 2) + Math.pow(dotEndY - dotStartY, 2));
-        boolean isDotSmall = dotDistance < 40;
+        boolean isDotSmall = dotDistance < 50;
 
-        boolean isDotBelowLine = dotStartY > lineEndY && Math.abs(dotStartX - lineEndX) < 30;
+        boolean isDotBelowLine = dotStartY > lineEndY && Math.abs(dotStartX - lineEndX) < 40;
         return isVerticalLine && isDotBelowLine && isDotSmall;
     }
 
@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         double angle1 = Math.atan2(endY1 - startY1, endX1 - startX1);
         double angle2 = Math.atan2(endY2 - startY2, endX2 - startX2);
 
-        boolean isCrossed = Math.abs(Math.toDegrees(angle1 - angle2)) > 45 && Math.abs(Math.toDegrees(angle1 - angle2)) < 135;
+        boolean isCrossed = Math.abs(Math.toDegrees(angle1 - angle2)) > 40 && Math.abs(Math.toDegrees(angle1 - angle2)) < 140;
 
         float midX1 = (startX1 + endX1) / 2;
         float midY1 = (startY1 + endY1) / 2;
