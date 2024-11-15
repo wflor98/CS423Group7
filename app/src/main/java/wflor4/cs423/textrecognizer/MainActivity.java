@@ -257,10 +257,13 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         TextView bodyView = taskList.get(taskIndex).findViewById(R.id.taskDescription);
         TextView dateView = taskList.get(taskIndex).findViewById(R.id.taskDate);
 
+        int currentColor = ((ColorDrawable) taskList.get(taskIndex).getBackground()).getColor();
+
         intent.putExtra("editTitle", titleView.getText().toString());
         intent.putExtra("editBody", bodyView.getText().toString());
         intent.putExtra("editDate", dateView.getText().toString().replace("Due: ", ""));
         intent.putExtra("taskIndex", taskIndex);
+        intent.putExtra("currentColor", currentColor);
 
         handwritingLauncher.launch(intent);
     }

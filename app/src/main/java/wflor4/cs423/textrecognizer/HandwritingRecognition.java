@@ -54,7 +54,14 @@ public class HandwritingRecognition extends AppCompatActivity {
         radioBody = findViewById(R.id.radioBody);
         Button btnColorPalette = findViewById(R.id.buttonColorPalette);  // Initialize the color picker button
 
-        defaultColor = ContextCompat.getColor(HandwritingRecognition.this, R.color.purple_700);
+        defaultColor = getIntent().getIntExtra("currentColor", ContextCompat.getColor(this, R.color.purple_700));
+
+        btnColorPalette.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openColorPicker();
+            }
+        });
 
         textViewT = findViewById(R.id.textResult_title); // Title CheckedTextView
         textView = findViewById(R.id.textResult);        // Body TextView
