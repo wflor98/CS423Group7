@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -53,13 +54,17 @@ public class HandwritingRecognition extends AppCompatActivity {
         radioBody = findViewById(R.id.radioBody);
         Button btnColorPalette = findViewById(R.id.buttonColorPalette);  // Initialize the color picker button
 
-        defaultColor = ContextCompat.getColor(HandwritingRecognition.this, R.color.black);
+        defaultColor = ContextCompat.getColor(HandwritingRecognition.this, R.color.purple_700);
 
         textViewT = findViewById(R.id.textResult_title); // Title CheckedTextView
         textView = findViewById(R.id.textResult);        // Body TextView
 
         String editTitle = getIntent().getStringExtra("editTitle");
         String editBody = getIntent().getStringExtra("editBody");
+        String editDate = getIntent().getStringExtra("editDate");
+        if (editDate != null) {
+            btnCalendar.setText(editDate);
+        }
 
         if (editTitle != null) {
             textViewT.setText(editTitle);
@@ -70,8 +75,15 @@ public class HandwritingRecognition extends AppCompatActivity {
 
         btnSave.setOnClickListener(v -> {
             Intent intent = new Intent();
-            intent.putExtra("savedTitle", textViewT.getText().toString());
-            intent.putExtra("savedBody", textView.getText().toString());
+
+            String title = textViewT.getText().toString();
+            String body = textView.getText().toString();
+            String date = ((Button) findViewById(R.id.calendar)).getText().toString();
+
+            intent.putExtra("savedTitle", title);
+            intent.putExtra("savedBody", body);
+            intent.putExtra("selectedDate", date);
+            intent.putExtra("selectedColor", defaultColor);
 
             if (editTitle != null || editBody != null) {
                 intent.putExtra("isEditMode", true);
