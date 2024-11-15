@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
     }
 
-    private void updateTaskTile(int taskIndex, String newTitle, String newBody, String date, int color) {
+    private void updateTaskTile(int taskIndex, String newTitle, String newBody, String newDate, int color) {
         if (taskIndex >= 0 && taskIndex < taskList.size()) {
             View taskTile = taskList.get(taskIndex);
             TextView titleView = taskTile.findViewById(R.id.taskTitle);
@@ -127,7 +127,14 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
             titleView.setText(newTitle);
             bodyView.setText(newBody);
-            dateView.setText(date);
+
+            if (newDate != null && !newDate.trim().isEmpty()) {
+                dateView.setText("Due: " + newDate);
+                dateView.setVisibility(View.VISIBLE);
+            } else {
+                dateView.setVisibility(View.GONE);
+            }
+
             taskTile.setBackgroundColor(color);
         }
     }
@@ -149,13 +156,22 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
             titleView.setText(title);
             descriptionView.setText(description);
-            dateView.setText(date);
+
+            if (date == null || date.trim().isEmpty() || date.equals("00/00/00")) {
+                dateView.setVisibility(View.GONE);
+            } else {
+                dateView.setText("Due: " + date);
+                dateView.setVisibility(View.VISIBLE);
+            }
 
             newTile.setBackgroundColor(color);
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
-            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            //params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            params.height = 300; // makes all of the tile the same size.
+                                 // the tiles are all different size when there is no due date
+                                 // looks chaotic. We can change this back later.
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             params.setMargins(8, 8, 8, 8);
             newTile.setLayoutParams(params);
@@ -217,9 +233,11 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
         TextView titleView = taskList.get(taskIndex).findViewById(R.id.taskTitle);
         TextView bodyView = taskList.get(taskIndex).findViewById(R.id.taskDescription);
+        TextView dateView = taskList.get(taskIndex).findViewById(R.id.taskDate);
 
         intent.putExtra("editTitle", titleView.getText().toString());
         intent.putExtra("editBody", bodyView.getText().toString());
+        intent.putExtra("editDate", dateView.getText().toString().replace("Due: ", ""));
         intent.putExtra("taskIndex", taskIndex);
 
         handwritingLauncher.launch(intent);
@@ -240,15 +258,17 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         for (int i = 0; i < taskList.size(); i++) {
             TextView titleView = taskList.get(i).findViewById(R.id.taskTitle);
             TextView descriptionView = taskList.get(i).findViewById(R.id.taskDescription);
+            TextView dateView = taskList.get(i).findViewById(R.id.taskDate);
             View taskTile = taskList.get(i);
 
             String title = titleView.getText().toString();
             String description = descriptionView.getText().toString();
+            String date = dateView.getText().toString().replace("Due: ", "");
             int color = ((ColorDrawable) taskTile.getBackground()).getColor();
 
             editor.putString("taskTitle_" + i, title);
             editor.putString("taskDescription_" + i, description);
-            editor.putString("taskDate_" + i, sharedPreferences.getString("taskDate_" + i, ""));
+            editor.putString("taskDate_" + i, date);
             editor.putInt("taskColor_" + i, color);
         }
 
