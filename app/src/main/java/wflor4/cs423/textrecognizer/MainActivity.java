@@ -150,11 +150,11 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             titleView.setText(newTitle);
             bodyView.setText(newBody);
 
-            if (newDate != null && !newDate.trim().isEmpty()) {
+            if (newDate == null || newDate.trim().isEmpty() || newDate.equals("00/00/00") || newDate.equals("Calendar")) {
+                dateView.setVisibility(View.GONE);
+            } else {
                 dateView.setText("Due: " + newDate);
                 dateView.setVisibility(View.VISIBLE);
-            } else {
-                dateView.setVisibility(View.GONE);
             }
 
             taskTile.setBackgroundColor(color);
