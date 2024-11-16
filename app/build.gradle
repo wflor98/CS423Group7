@@ -45,5 +45,10 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.github.yukuku:ambilwarna:2.0.1' // added by Ed for color palette
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    // RecyclerView dependency
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+    // CardView dependency
+    implementation 'androidx.cardview:cardview:1.0.0'
 
 }

@@ -19,5 +19,55 @@
         android:layout_height="wrap_content"
         android:text="Go to Tasks"
         android:padding="12dp" />
+<!--    -->
+<!--    &lt;!&ndash; RecyclerView to display tasks &ndash;&gt;-->
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/tasksRecyclerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="16dp" />-->
 
 </LinearLayout>
+
+
+
+
+<!--    <?xml version="1.0" encoding="utf-8"?>-->
+<!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:layout_margin="8dp"-->
+<!--app:cardCornerRadius="12dp"-->
+<!--app:cardElevation="6dp">-->
+
+<!--<LinearLayout-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="vertical"-->
+<!--    android:padding="16dp">-->
+
+<!--    &lt;!&ndash; Task Title &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/taskTitle"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Task Title"-->
+<!--        android:textSize="18sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textColor="@android:color/black" />-->
+
+<!--    &lt;!&ndash; Task Description &ndash;&gt;-->
+<!--    <TextView-->
+<!--        android:id="@+id/taskDescription"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="This is a task description."-->
+<!--        android:textSize="14sp"-->
+<!--        android:textColor="@android:color/darker_gray"-->
+<!--        android:layout_marginTop="4dp" />-->
+
+<!--</LinearLayout>-->
+<!--</androidx.cardview.widget.CardView>-->
+
+
