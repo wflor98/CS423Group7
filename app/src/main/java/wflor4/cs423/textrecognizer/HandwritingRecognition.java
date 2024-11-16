@@ -1,37 +1,36 @@
 package wflor4.cs423.textrecognizer;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import yuku.ambilwarna.AmbilWarnaDialog;  //  using AmbilWarnaDialog
-
-
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
 import java.util.Calendar;
-
-import yuku.ambilwarna.AmbilWarnaDialog;
+//import yuku.ambilwarna.AmbilWarnaDialog;
 
 public class HandwritingRecognition extends AppCompatActivity {
 
     private Button btnRecognize, btnClear, btnEdit, btnCalendar, btnSave;
     private DrawView drawView;
     private TextView textView, textViewT;
+
     private RadioGroup radioGroup;
     private RadioButton radioTitle, radioBody;
 
     int defaultColor;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +54,79 @@ public class HandwritingRecognition extends AppCompatActivity {
         radioBody = findViewById(R.id.radioBody);
         Button btnColorPalette = findViewById(R.id.buttonColorPalette);  // Initialize the color picker button
 
-        defaultColor = ContextCompat.getColor(HandwritingRecognition.this, R.color.black);
+        defaultColor = getIntent().getIntExtra("currentColor", ContextCompat.getColor(this, R.color.purple_700));
 
+        btnColorPalette.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openColorPicker();
+            }
+        });
 
-        hideTitleBar();
+        textViewT = findViewById(R.id.textResult_title); // Title CheckedTextView
+        textView = findViewById(R.id.textResult);        // Body TextView
+
+        String editTitle = getIntent().getStringExtra("editTitle");
+        String editBody = getIntent().getStringExtra("editBody");
+        String editDate = getIntent().getStringExtra("editDate");
+        if (editDate != null) {
+            btnCalendar.setText(editDate);
+        }
+
+        if (editTitle != null) {
+            textViewT.setText(editTitle);
+        }
+        if (editBody != null) {
+            textView.setText(editBody);
+        }
+
+        btnSave.setOnClickListener(v -> {
+            Intent intent = new Intent();
+
+            String title = textViewT.getText().toString();
+            String body = textView.getText().toString();
+            String date = ((Button) findViewById(R.id.calendar)).getText().toString();
+
+            intent.putExtra("savedTitle", title);
+            intent.putExtra("savedBody", body);
+            intent.putExtra("selectedDate", date);
+            intent.putExtra("selectedColor", defaultColor);
+
+            if (editTitle != null || editBody != null) {
+                intent.putExtra("isEditMode", true);
+                int taskIndex = getIntent().getIntExtra("taskIndex", -1);
+                intent.putExtra("taskIndex", taskIndex);
+            }
+
+            setResult(RESULT_OK, intent);
+            finish();
+        });
+
+        Button btnClearDrawView = findViewById(R.id.btnClearDrawView);
+
+//        hideTitleBar();
 
         StrokeManager.download();
+
+        btnClearDrawView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawView.clear();  // Clear the DrawView
+                StrokeManager.clear();  // Clear the StrokeManager
+                Toast.makeText(HandwritingRecognition.this, "DrawView Cleared", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.radioTitle) {
+                    Toast.makeText(HandwritingRecognition.this, "Writing enabled: Currently Editing Title", Toast.LENGTH_SHORT).show();
+                } else if (checkedId == R.id.radioBody) {
+                    Toast.makeText(HandwritingRecognition.this, "Writing enabled: Currently Editing Body", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         // set onClickListener for color palette button added by Esat
         btnColorPalette.setOnClickListener(new View.OnClickListener() {
@@ -70,53 +136,63 @@ public class HandwritingRecognition extends AppCompatActivity {
             }
         });
 
-        // Edit button logic by Esat Duman
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Check which radio button is selected
+                String selectedText = "";
+                final TextView targetTextView;
+
                 if (radioTitle.isChecked()) {
-                    // Toggle textViewT to be editable
-                    textViewT.setFocusableInTouchMode(true);
-                    textViewT.setFocusable(true);
-                    textViewT.requestFocus();
-                    textViewT.setCursorVisible(true);  // Show the cursor for editing
-                    Toast.makeText(HandwritingRecognition.this, "Editing Title", Toast.LENGTH_SHORT).show();
+                    selectedText = textViewT.getText().toString();
+                    targetTextView = textViewT;
                 } else if (radioBody.isChecked()) {
-                    // Toggle textView to be editable
-                    textView.setFocusableInTouchMode(true);
-                    textView.setFocusable(true);
-                    textView.requestFocus();
-                    textView.setCursorVisible(true);  // Show the cursor for editing
-                    Toast.makeText(HandwritingRecognition.this, "Editing Body", Toast.LENGTH_SHORT).show();
+                    selectedText = textView.getText().toString();
+                    targetTextView = textView;
+                } else {
+                    Toast.makeText(HandwritingRecognition.this, "Please select Title or Body", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Create an EditText to edit the selected text
+                final EditText editText = new EditText(HandwritingRecognition.this);
+                editText.setText(selectedText);
+                editText.setSelection(editText.getText().length());  // Move cursor to the end of text
+
+                // Show keyboard automatically when dialog opens
+                editText.requestFocus();
+
+                // Create an AlertDialog for editing
+                AlertDialog dialog = new AlertDialog.Builder(HandwritingRecognition.this)
+                        .setTitle("Edit Text")
+                        .setView(editText)
+                        .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Update the original TextView with the new text
+                                targetTextView.setText(editText.getText().toString());
+                                dialog.dismiss();
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+
+                // Show the dialog
+                dialog.show();
+
+                // Show the keyboard after dialog is shown
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
                 }
             }
         });
 
-// Clear button logic to reset both textViews to non-editable state
-        btnClear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                drawView.clear();
-                StrokeManager.clear();
-                if (radioTitle.isChecked()) {
-                    textViewT.setText("");
-                    // Make textViewT non-editable again
-                    textViewT.setFocusable(false);
-                    textViewT.setCursorVisible(false);
-                } else if (radioBody.isChecked()) {
-                    textView.setText("");
-                    // Make textView non-editable again
-                    textView.setFocusable(false);
-                    textView.setCursorVisible(false);
-                }
-            }
-        });
-
-
-
-
-
-        // Clear button logic
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,12 +232,16 @@ public class HandwritingRecognition extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (radioTitle.isChecked()) {
-                    // Recognize gesture for the title
+                    if(textViewT.getText().toString().equals("Title")){
+                        textViewT.setText("");
+                    }
                     StrokeManager.recognize(textViewT);
                     StrokeManager.clear();
                     drawView.clear();
                 } else if (radioBody.isChecked()) {
-                    // Recognize gesture for the body
+                    if(textView.getText().toString().equals("Body")){
+                        textView.setText("");
+                    }
                     StrokeManager.recognize(textView);
                     StrokeManager.clear();
                     drawView.clear();
@@ -169,30 +249,32 @@ public class HandwritingRecognition extends AppCompatActivity {
             }
         });
 
-
         // Save button: Save the title text
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-
-                String title = textViewT.getText().toString();
-                String body = textView.getText().toString();
-                intent.putExtra("savedTitle", title);   // Pass the body text
-                intent.putExtra("savedBody", body);      // Indicate it's a body
-
-
-                setResult(RESULT_OK, intent);  // Set the result to OK and attach the Intent
-//                Toast.makeText(HandwritingRecognition.this, "Intent", Toast.LENGTH_SHORT).show();
-
-                finish();  // Close this activity and return to MainActivity
-            }
-        });
-
+//        btnSave.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent();
+//
+//                String title = textViewT.getText().toString();
+//                String body = textView.getText().toString();
+//                intent.putExtra("savedTitle", title);   // Pass the body text
+//                intent.putExtra("savedBody", body);      // Indicate it's a body
+//
+//
+//                setResult(RESULT_OK, intent);  // Set the result to OK and attach the Intent
+////                Toast.makeText(HandwritingRecognition.this, "Intent", Toast.LENGTH_SHORT).show();
+//
+//                finish();  // Close this activity and return to MainActivity
+//            }
+//        });
+        Toast.makeText(HandwritingRecognition.this, "Writing enabled: Currently Editing Title", Toast.LENGTH_SHORT).show();
     }
 
     // Method to show the DatePickerDialog
     private void showDatePickerDialog() {
+        // Get the button by its ID
+        Button buttonDatePicker = findViewById(R.id.calendar);
+
         // Get the current date
         final Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -200,17 +282,19 @@ public class HandwritingRecognition extends AppCompatActivity {
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
         // Create and show the DatePickerDialog
-        DatePickerDialog datePickerDialog = new DatePickerDialog(HandwritingRecognition.this,
-                new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(HandwritingRecognition.this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                         String selectedDate = dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
+
+                        // Set the selected date as the button's text
+                        buttonDatePicker.setText(selectedDate);
+
                         Toast.makeText(HandwritingRecognition.this, "Selected date: " + selectedDate, Toast.LENGTH_SHORT).show();
                     }
                 }, year, month, day);
         datePickerDialog.show();
     }
-
 
     private void hideTitleBar() {
         this.getWindow().getDecorView().setSystemUiVisibility(
@@ -239,4 +323,6 @@ public class HandwritingRecognition extends AppCompatActivity {
         });
         ambilWarnaDialog.show();  // Show the color picker dialog
     }
+
+
 }
