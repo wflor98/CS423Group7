@@ -132,9 +132,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
         params.setMargins(8, 8, 8, 8);
         templateTile.setLayoutParams(params);
-        Toast.makeText(MainActivity.this,
-                "templete not added",
-                Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MainActivity.this, "templete not added", Toast.LENGTH_SHORT).show();
 
         gridLayout.addView(templateTile, 0);
         isTemplateTileAdded = true;
