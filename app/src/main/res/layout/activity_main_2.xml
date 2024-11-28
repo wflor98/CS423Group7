@@ -1,73 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="0dp">
+    android:background="#F0F4F8">
 
-    <!-- Horizontal LinearLayout to arrange buttons side by side -->
+    <!-- Top Action Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="0dp">
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:paddingVertical="8dp">
 
-        <!-- Button with X Icon -->
         <Button
             android:id="@+id/cancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableLeft="@android:drawable/ic_delete"
+            android:drawableTint="#F44336"
+            android:background="?attr/selectableItemBackground"
+            android:textColor="#2C3E50"
             android:drawablePadding="8dp"
             android:padding="12dp" />
 
-        <!-- Button with Calendar Icon -->
         <Button
             android:id="@+id/calendar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:text="Calendar"
-            android:drawableTint="@color/yellow"
+            android:textColor="#3F51B5"
             android:drawableLeft="@android:drawable/ic_menu_my_calendar"
+            android:background="?attr/selectableItemBackground"
+            android:drawableTint="#3F51B5"
             android:drawablePadding="8dp"
             android:padding="12dp" />
 
-        <!-- Button with Checkmark Icon -->
         <Button
             android:id="@+id/checkmark"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableRight="@android:drawable/ic_menu_save"
-            android:drawableTint="@color/shiny_green"
+            android:drawableTint="#4CAF50"
+            android:background="?attr/selectableItemBackground"
+            android:textColor="#2C3E50"
             android:drawablePadding="8dp"
             android:padding="12dp" />
     </LinearLayout>
 
-    <!-- CheckedTextView (below the buttons) -->
+    <!-- Title -->
     <CheckedTextView
         android:id="@+id/textResult_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Title"
         android:textAlignment="center"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="@android:color/black"
+        android:textColor="#2C3E50"
         android:gravity="center"
         android:padding="16dp"
         android:background="@android:color/transparent" />
 
-    <!-- FrameLayout with a background TextView and a DrawView -->
+    <!-- Drawing Area -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="6">
+        android:layout_weight="6"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:layout_margin="8dp"
+        android:padding="8dp">
 
-        <!-- TextView behind the DrawView -->
         <TextView
             android:id="@+id/textResult"
             android:layout_width="match_parent"
@@ -75,9 +85,8 @@
             android:text="Body"
             android:textSize="24sp"
             android:gravity="center"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="#B0B0B0" />
 
-        <!-- Custom DrawView on top of the TextView -->
         <wflor4.cs423.textrecognizer.DrawView
             android:id="@+id/draw_view"
             android:layout_width="match_parent"
@@ -96,92 +105,88 @@
             android:textSize="18sp" />
     </FrameLayout>
 
-    <!-- LinearLayout containing the RadioGroup -->
+    <!-- Radio Group -->
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:paddingVertical="8dp">
+
+        <RadioButton
+            android:id="@+id/radioTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Title"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textColor="#3F51B5"
+            android:checked="true"
+            android:buttonTint="#3F51B5"/>
+
+        <RadioButton
+            android:id="@+id/radioBody"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Body"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textColor="#3F51B5"
+            android:buttonTint="#3F51B5"/>
+    </RadioGroup>
+
+    <!-- Action Buttons -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="0dp">
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="4dp"
+        android:paddingVertical="8dp">
 
-        <RadioGroup
-            android:id="@+id/radioGroup"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/buttonEdit"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:text="Edit"
+            android:textColor="#2196F3"
+            android:background="?attr/selectableItemBackground"
+            android:textSize="16sp"/>
 
-            <!-- First RadioButton -->
-            <RadioButton
-                android:id="@+id/radioTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Title"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:background="@color/purple_200"
-                android:textColor="@color/white"
-                android:checked="true"/>
+        <Button
+            android:id="@+id/buttonRecognize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Add"
+            android:textColor="#4CAF50"
+            android:background="?attr/selectableItemBackground"
+            android:textSize="16sp" />
 
-            <!-- Second RadioButton -->
-            <RadioButton
-                android:id="@+id/radioBody"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Body"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:background="@color/purple_200"
-                android:textColor="@color/white" />
-        </RadioGroup>
+        <Button
+            android:id="@+id/buttonClear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Clear"
+            android:textColor="#FF5722"
+            android:background="?attr/selectableItemBackground"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/buttonColorPalette"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="COLOR"
+            android:textColor="#9C27B0"
+            android:background="?attr/selectableItemBackground"
+            android:textSize="16sp" />
     </LinearLayout>
-
-    <!-- ScrollView directly beneath RadioGroup without spacing -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="0dp">
-
-        <!-- LinearLayout as container for children with match_parent height -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:paddingBottom="10px"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/buttonEdit"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Edit"
-                android:textSize="16sp"/>
-
-            <Button
-                android:id="@+id/buttonRecognize"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Add"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/buttonClear"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="Clear"
-                android:textSize="16sp"/>
-
-            <Button
-                android:id="@+id/buttonColorPalette"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="COLOR"
-                android:textSize="16sp" />
-        </LinearLayout>
-    </ScrollView>
 </LinearLayout>

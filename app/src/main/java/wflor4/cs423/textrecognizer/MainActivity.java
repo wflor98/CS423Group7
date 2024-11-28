@@ -49,6 +49,18 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Check if there's a task passed from HomeActivity
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("taskTitle")) {
+            String title = intent.getStringExtra("taskTitle");
+            String description = intent.getStringExtra("taskDescription");
+            String date = intent.getStringExtra("taskDate");
+
+            // Highlight or display the task
+            displayTask(title, description, date);
+        }
+
+
 
         objLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
         if (!objLib.load()) {
@@ -118,6 +130,19 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
                     Toast.LENGTH_SHORT).show();
         });
 
+    }
+
+    // Done by Esat Duman
+    private void displayTask(String title, String description, String date) {
+        for (View task : taskList) {
+            TextView titleView = task.findViewById(R.id.taskTitle);
+
+            if (titleView.getText().toString().equals(title)) {
+                // Highlight the task (e.g., change background color or scroll to it)
+                task.setBackgroundColor(ContextCompat.getColor(this, R.color.highlight));
+                break;
+            }
+        }
     }
 
     private void createTemplateTile() {

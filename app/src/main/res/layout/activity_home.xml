@@ -1,73 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/welcomeText"
-        android:layout_width="wrap_content"
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:padding="16dp"
-        android:text="Welcome to Task Manager"
+        android:text="Main Menu"
         android:textSize="24sp" />
 
-    <Button
-        android:id="@+id/btnStart"
-        android:layout_width="wrap_content"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/searchView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Go to Tasks"
-        android:padding="12dp" />
-<!--    -->
-<!--    &lt;!&ndash; RecyclerView to display tasks &ndash;&gt;-->
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/tasksRecyclerView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="16dp" />-->
+        android:queryHint="FILTER" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:id="@+id/searchResultLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp" />
+
+        <Button
+            android:id="@+id/buttonNavigate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:padding="16dp"
+            android:text="Go To Tasks" />
+
+    </FrameLayout>
 
 </LinearLayout>
-
-
-
-
-<!--    <?xml version="1.0" encoding="utf-8"?>-->
-<!--<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-<!--android:layout_width="match_parent"-->
-<!--android:layout_height="wrap_content"-->
-<!--android:layout_margin="8dp"-->
-<!--app:cardCornerRadius="12dp"-->
-<!--app:cardElevation="6dp">-->
-
-<!--<LinearLayout-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="wrap_content"-->
-<!--    android:orientation="vertical"-->
-<!--    android:padding="16dp">-->
-
-<!--    &lt;!&ndash; Task Title &ndash;&gt;-->
-<!--    <TextView-->
-<!--        android:id="@+id/taskTitle"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="Task Title"-->
-<!--        android:textSize="18sp"-->
-<!--        android:textStyle="bold"-->
-<!--        android:textColor="@android:color/black" />-->
-
-<!--    &lt;!&ndash; Task Description &ndash;&gt;-->
-<!--    <TextView-->
-<!--        android:id="@+id/taskDescription"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:text="This is a task description."-->
-<!--        android:textSize="14sp"-->
-<!--        android:textColor="@android:color/darker_gray"-->
-<!--        android:layout_marginTop="4dp" />-->
-
-<!--</LinearLayout>-->
-<!--</androidx.cardview.widget.CardView>-->
-
-
