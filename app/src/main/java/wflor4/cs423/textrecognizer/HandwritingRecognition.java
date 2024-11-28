@@ -121,12 +121,28 @@ public class HandwritingRecognition extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.radioTitle) {
+                    // Set Title button and TextView to yellow
+                    radioTitle.setBackgroundColor(getResources().getColor(R.color.yellow));
+                    textViewT.setBackgroundColor(getResources().getColor(R.color.yellow));
+                    // Reset Body button and TextView to default
+                    radioBody.setBackgroundResource(R.drawable.button_border);
+                    textView.setBackgroundColor(Color.TRANSPARENT);
+
                     Toast.makeText(HandwritingRecognition.this, "Writing enabled: Currently Editing Title", Toast.LENGTH_SHORT).show();
                 } else if (checkedId == R.id.radioBody) {
+                    // Set Body button and TextView to yellow
+                    radioBody.setBackgroundColor(getResources().getColor(R.color.yellow));
+                    textView.setBackgroundColor(getResources().getColor(R.color.yellow));
+
+                    // Reset Title button and TextView to default
+                    radioTitle.setBackgroundResource(R.drawable.button_border);
+                    textViewT.setBackgroundColor(Color.TRANSPARENT);
+
                     Toast.makeText(HandwritingRecognition.this, "Writing enabled: Currently Editing Body", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
 
         // set onClickListener for color palette button added by Esat
         btnColorPalette.setOnClickListener(new View.OnClickListener() {
