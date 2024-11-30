@@ -21,6 +21,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+// Esats Class for the Main Menu
 public class HomeActivity extends AppCompatActivity {
 
     private List<Task> taskList = new ArrayList<>();

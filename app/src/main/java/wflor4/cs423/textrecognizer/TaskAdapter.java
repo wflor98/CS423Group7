@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
-//    private static final int TASK_CARD_HEIGHT = 200;
+    //    private static final int TASK_CARD_HEIGHT = 200;
     private List<Task> taskList;
     private Context context;
 
