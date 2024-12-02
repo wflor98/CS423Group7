@@ -29,8 +29,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:background="#eccfff"/>
+            android:padding="16dp" />
 
         <!-- Add a View for the line between items here -->
         <!-- Light purple line -->
