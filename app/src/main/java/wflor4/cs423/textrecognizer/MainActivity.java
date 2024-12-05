@@ -213,8 +213,8 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
-            //params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            params.height = 300; // makes all of the tile the same size.
+            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            //params.height = 300; // makes all of the tile the same size.
                                  // the tiles are all different size when there is no due date
                                  // looks chaotic. We can change this back later.
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
