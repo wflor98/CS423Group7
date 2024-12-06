@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Main Menu"
+        android:text="Search Task List"
         android:textSize="24sp" />
 
     <androidx.appcompat.widget.SearchView
