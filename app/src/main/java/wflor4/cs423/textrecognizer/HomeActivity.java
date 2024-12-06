@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
 
         Button buttonNavigate = findViewById(R.id.buttonNavigate);
 
-        // Set up click listener for navigation
+        // listener for navigation
         buttonNavigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,10 +126,10 @@ public class HomeActivity extends AppCompatActivity {
                 Task task = taskList.get(position);
 
                 if (direction == ItemTouchHelper.LEFT) {
-                    // Handle left swipe (e.g., delete task)
+
                     deleteTask(task);
                 } else if (direction == ItemTouchHelper.RIGHT) {
-                    // Handle right swipe (e.g., mark task as complete)
+
                     completeTask(task);
                 }
             }
