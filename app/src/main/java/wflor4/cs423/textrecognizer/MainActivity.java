@@ -12,6 +12,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
             // Highlight or display the task
             displayTask(title, description, date);
         }
-
 
 
         objLib = GestureLibraries.fromRawResource(this, R.raw.gestures);
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
         View templateTile = getLayoutInflater().inflate(R.layout.task_template_tile, gridLayout, false);
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-        params.width = 0;
+        params.width = ViewGroup.LayoutParams.WRAP_CONTENT;
         params.height = 300;
         params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
         params.setMargins(8, 8, 8, 8);
@@ -213,11 +213,9 @@ public class MainActivity extends AppCompatActivity implements GestureOverlayVie
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
-            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            //params.height = 300; // makes all of the tile the same size.
-                                 // the tiles are all different size when there is no due date
-                                 // looks chaotic. We can change this back later.
+            params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+            params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             params.setMargins(8, 8, 8, 8);
             newTile.setLayoutParams(params);
 
